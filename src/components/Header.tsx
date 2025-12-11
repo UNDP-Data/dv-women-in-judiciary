@@ -12,7 +12,6 @@ export default function HeaderEl() {
       <HeaderLogoUnit hyperlink='./' siteName='Women in Judiciary' />
       <HeaderMainNavUnit>
         <HeaderMenuUnit className='md:justify-end'>
-          <Link to='/story'>Story</Link>
           <Link to='/data-explorer'>Data explorer</Link>
           <Link to='/country-insights'>Country insights</Link>
           <Link to='/resources'>Resources</Link>
