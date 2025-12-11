@@ -2,7 +2,7 @@ import { createRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { AnyRootRoute } from '@tanstack/react-router';
 import { Spinner } from '@undp/design-system-react/Spinner';
-import { H1 } from '@undp/design-system-react/Typography';
+import { H2 } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { DonutChart } from '@undp/data-viz/DonutChart';
@@ -46,12 +46,12 @@ export function CountryInsights() {
     latestDataAllCourt.above_65Percentage,
   ].filter(d => d !== undefined && d !== null);
   return (
-    <div className='page-container'>
-      <Spacer size='4xl' />
-      <H1 marginBottom='none' className='text-[var(--blue-700)]'>
+    <div className='page-container px-6 sm:px-16 my-16'>
+      <Spacer size='2xl' />
+      <H2 className='font-heading uppercase' marginBottom='none'>
         Country Insights
-      </H1>
-      <Spacer size='xl' />
+      </H2>
+      <Spacer size='4xl' />
       <DropdownSelect
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange={(d: any) => updateCountry(d.value)}
