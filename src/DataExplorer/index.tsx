@@ -39,7 +39,7 @@ function useData() {
     queryFn: getData,
   });
 }
-function DataExplorer() {
+function DataExplorerWidget() {
   const { isLoading, isError, data } = useData();
   const tab = useTab();
   const year = useYear();
@@ -414,4 +414,4 @@ function DataExplorer() {
   );
 }
 
-export default DataExplorer;
+export default DataExplorerWidget;
