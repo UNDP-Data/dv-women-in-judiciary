@@ -1,31 +1,17 @@
+@import 'tailwindcss';
 @import '@undp/design-system-react/style.css';
 @import '@undp/data-viz/style.css';
-@import 'tailwindcss';
 @config '../../tailwind.config.js';
 
 .page-container {
   width: 100%;
   box-sizing: border-box;
   max-width: 1980px;
+  margin: 0 auto;
 }
 
 .font-heading {
   font-family: 'SohneBreit', sans-serif;
-}
-
-canvas {
-  display: block;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  overflow: hidden;
-}
-
-#noise {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0.05;
-  z-index: 10;
 }
 
 .glow-hover::after {
