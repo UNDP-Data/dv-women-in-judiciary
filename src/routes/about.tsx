@@ -1,15 +1,18 @@
 import { createRoute } from '@tanstack/react-router';
 import type { AnyRootRoute } from '@tanstack/react-router';
-import { A, H1, P } from '@undp/design-system-react/Typography';
+import { A, H2, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
-export function TanStackQueryDemo() {
+export function About() {
   return (
     <>
-      <div className='page-container my-16'>
-        <H1 marginBottom='none'>About</H1>
+      <div className='page-container px-6 sm:px-16 my-16'>
         <Spacer size='2xl' />
-        <P size='base'>
+        <H2 className='font-heading uppercase' marginBottom='none'>
+          About
+        </H2>
+        <Spacer size='4xl' />
+        <P size='lg'>
           Lorem ipsum dolor sit amet consectetur. Pharetra mi purus porttitor
           nibh diam in. Egestas ut id donec diam risus elementum lectus
           facilisis nec. Quis ut amet odio ultrices. Ullamcorper leo consectetur
@@ -56,7 +59,7 @@ export function TanStackQueryDemo() {
 export default function createAboutRoute(parentRoute: AnyRootRoute) {
   return createRoute({
     path: '/about',
-    component: TanStackQueryDemo,
+    component: About,
     getParentRoute: () => parentRoute,
   });
 }

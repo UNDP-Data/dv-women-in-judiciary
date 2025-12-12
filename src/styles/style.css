@@ -1,10 +1,55 @@
+@import 'tailwindcss';
 @import '@undp/design-system-react/style.css';
 @import '@undp/data-viz/style.css';
-@import 'tailwindcss';
 @config '../../tailwind.config.js';
 
 .page-container {
   width: 100%;
-  padding: 0 8rem;
   box-sizing: border-box;
+  max-width: 1980px;
+  margin: 0 auto;
+}
+
+.font-heading {
+  font-family: 'SohneBreit', sans-serif;
+}
+
+.glow-hover::after {
+  content: '';
+  mix-blend-mode: multiply;
+  position: absolute;
+  z-index: 0;
+  bottom: -600px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  opacity: 0;
+  filter: blur(50px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+  pointer-events: none;
+}
+
+.glow-hover:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-100px);
+}
+
+.glow-warm::after {
+  background: radial-gradient(
+    circle,
+    rgba(255, 122, 82, 1),
+    rgb(255, 206, 100, 1)
+  );
+}
+
+.glow-purple::after {
+  background: radial-gradient(circle, rgba(140, 100, 220), rgba(220, 150, 200));
+}
+
+.glow-blue::after {
+  background: radial-gradient(circle, rgba(80, 140, 255), rgba(120, 180, 255));
 }

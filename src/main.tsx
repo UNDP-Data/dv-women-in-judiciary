@@ -16,6 +16,8 @@ import createCountryInsightsRoute from './routes/countryInsights';
 import './styles/fonts.css';
 import './styles/style.css';
 import createAboutRoute from './routes/about';
+import createResourcesRoute from './routes/resources';
+import createDataExplorerRoute from './routes/dataExplorer';
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -41,6 +43,8 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   createCountryInsightsRoute(rootRoute),
   createAboutRoute(rootRoute),
+  createResourcesRoute(rootRoute),
+  createDataExplorerRoute(rootRoute),
 ]);
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext();
