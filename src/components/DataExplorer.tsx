@@ -9,16 +9,19 @@ import {
   VisualizationWidgetHeaderItem,
 } from '@undp/design-system-react/VisualizationWidget';
 import { ChartBarBig, ChartLine, Map, TextAlignStart } from 'lucide-react';
-import { Activity, useEffect, useMemo } from 'react';
+import { Activity } from 'react';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
 import { SimpleBarGraph } from '@undp/data-viz/BarGraph';
+import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
 import { DumbbellChart } from '@undp/data-viz/DumbbellChart';
 import { SegmentedControl } from '@undp/design-system-react/SegmentedControl';
+import { Separator } from '@undp/design-system-react/Separator';
+import { numberFormattingFunction } from '@undp/data-viz/utils';
 
 import { getData } from '@/QueryFn/getData';
 import {
@@ -29,7 +32,6 @@ import {
   useIndicator,
   useRegion,
   useTab,
-  useYear,
 } from '@/stores/dataExplorerStore';
 import { INDICATORS_OPTIONS } from '@/constants';
 
@@ -42,14 +44,12 @@ function useData() {
 function DataExplorerWidget() {
   const { isLoading, isError, data } = useData();
   const tab = useTab();
-  const year = useYear();
   const indicator = useIndicator();
   const courtType = useCourtType();
   const region = useRegion();
   const countries = useCountries();
   const disaggregationType = useDisaggregationType();
   const {
-    updateYear,
     updateTab,
     updateCourtType,
     updateRegion,
@@ -57,15 +57,6 @@ function DataExplorerWidget() {
     updateIndicator,
     updateDisaggregationType,
   } = useDataExplorerActions();
-  const latestYear = useMemo(() => {
-    if (!data) return;
-    return Math.max(...data.map(d => d.TimePeriod));
-  }, [data]);
-
-  useEffect(() => {
-    updateYear(latestYear || 2025);
-  }, [latestYear, updateYear]);
-
   if (isLoading)
     return (
       <div>
@@ -139,26 +130,6 @@ function DataExplorerWidget() {
                   variant='light'
                 />
               </Activity>
-              <Activity mode={tab === 'trends' ? 'hidden' : 'visible'}>
-                <Spacer size='xl' />
-                <P size='xs' marginBottom='2xs'>
-                  Select year
-                </P>
-                <DropdownSelect
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(d: any) => updateYear(d.value)}
-                  value={{ label: year.toString(), value: year }}
-                  options={[...new Set(data.map(d => d.TimePeriod))]
-                    .sort((a, b) => b - a)
-                    .map(d => ({
-                      label: d.toString(),
-                      value: d,
-                    }))}
-                  size='sm'
-                  variant='light'
-                  isDisabled={tab === 'trends'}
-                />
-              </Activity>
               <Spacer size='xl' />
               <P size='xs' marginBottom='2xs'>
                 Select court type
@@ -196,10 +167,12 @@ function DataExplorerWidget() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onChange={(d: any) => updateRegion(d?.value)}
                 value={region ? { value: region, label: region } : undefined}
-                options={[...new Set(data.map(d => d.Region))].map(d => ({
-                  label: d,
-                  value: d,
-                }))}
+                options={[...new Set(data.latestData.map(d => d.Region))].map(
+                  d => ({
+                    label: d,
+                    value: d,
+                  }),
+                )}
                 size='sm'
                 variant='light'
                 isClearable
@@ -216,12 +189,12 @@ function DataExplorerWidget() {
                     updateCountries(d.map((el: any) => el.value))
                   }
                   value={countries?.map(d => ({ value: d, label: d }))}
-                  options={[...new Set(data.map(d => d.GeoAreaName))].map(
-                    d => ({
-                      label: d,
-                      value: d,
-                    }),
-                  )}
+                  options={[
+                    ...new Set(data.latestData.map(d => d.GeoAreaName)),
+                  ].map(d => ({
+                    label: d,
+                    value: d,
+                  }))}
                   size='sm'
                   variant='light'
                   isClearable
@@ -235,10 +208,7 @@ function DataExplorerWidget() {
                 {tab === 'map' && (
                   <ChoroplethMap
                     data={transformDataForGraph(
-                      data.filter(
-                        d =>
-                          d.TimePeriod === year && d.court === courtType.value,
-                      ),
+                      data.latestData.filter(d => d.court === courtType.value),
                       'choroplethMap',
                       [
                         {
@@ -260,19 +230,71 @@ function DataExplorerWidget() {
                     backgroundColor={false}
                     highlightedIds={
                       region
-                        ? data
+                        ? data.latestData
                             .filter(d => (region ? d.Region === region : true))
                             .map(d => d.ISOalpha3)
                         : []
                     }
+                    tooltip={d => {
+                      return (
+                        <div className='w-[280px]'>
+                          <P
+                            size='sm'
+                            marginBottom='none'
+                            className='font-bold'
+                          >
+                            {d.data.GeoAreaName}
+                          </P>
+                          <Spacer size='base' />
+                          <div className='flex gap-4 justify-between'>
+                            <P marginBottom='none' size='sm'>
+                              {indicator.label} - {courtType.label} (
+                              {d.data.TimePeriod})
+                            </P>
+                            <P marginBottom='none' size='sm'>
+                              {numberFormattingFunction(
+                                d.data[indicator.value],
+                              )}
+                            </P>
+                          </div>
+                          <Spacer size='base' />
+                          <Separator />
+                          <Spacer size='base' />
+                          <SimpleLineChart
+                            height={150}
+                            backgroundColor={false}
+                            data={transformDataForGraph(
+                              data.completeData.filter(
+                                el =>
+                                  el.court === courtType.value &&
+                                  el.GeoAreaName === d.data.GeoAreaName,
+                              ),
+                              'lineChart',
+                              [
+                                {
+                                  chartConfigId: 'date',
+                                  columnId: 'TimePeriod',
+                                },
+                                {
+                                  chartConfigId: 'y',
+                                  columnId: indicator.value,
+                                },
+                              ],
+                            )}
+                            maxValue={100}
+                            noOfXTicks={2}
+                            noOfYTicks={2}
+                          />
+                        </div>
+                      );
+                    }}
                   />
                 )}
                 {tab === 'ranks' && (
                   <SimpleBarGraph
                     data={transformDataForGraph(
-                      data.filter(
+                      data.latestData.filter(
                         d =>
-                          d.TimePeriod === year &&
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
                           ((countries || []).length > 0
@@ -293,9 +315,13 @@ function DataExplorerWidget() {
                     )}
                     orientation='horizontal'
                     height={
-                      data.filter(
+                      data.latestData.filter(
                         d =>
-                          d.TimePeriod === year && d.court === courtType.value,
+                          d.court === courtType.value &&
+                          (region ? d.Region === region : true) &&
+                          ((countries || []).length > 0
+                            ? (countries || []).includes(d.GeoAreaName)
+                            : true),
                       ).length * 40
                     }
                     leftMargin={100}
@@ -313,10 +339,13 @@ function DataExplorerWidget() {
                 {tab === 'trends' && (
                   <MultiLineAltChart
                     data={transformDataForGraph(
-                      data.filter(
+                      data.completeData.filter(
                         d =>
                           d.court === courtType.value &&
-                          (region ? d.Region === region : true),
+                          (region ? d.Region === region : true) &&
+                          ((countries || []).length > 0
+                            ? (countries || []).includes(d.GeoAreaName)
+                            : true),
                       ),
                       'multiLineAltChart',
                       [
@@ -343,9 +372,13 @@ function DataExplorerWidget() {
                 {tab === 'disaggregations' && (
                   <DumbbellChart
                     data={transformDataForGraph(
-                      data.filter(
+                      data.latestData.filter(
                         d =>
-                          d.TimePeriod === year && d.court === courtType.value,
+                          d.court === courtType.value &&
+                          (region ? d.Region === region : true) &&
+                          ((countries || []).length > 0
+                            ? (countries || []).includes(d.GeoAreaName)
+                            : true),
                       ),
                       'dumbbellChart',
                       [
@@ -371,9 +404,8 @@ function DataExplorerWidget() {
                     leftMargin={100}
                     truncateBy={20}
                     height={
-                      data.filter(
+                      data.latestData.filter(
                         d =>
-                          d.TimePeriod === year &&
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
                           ((countries || []).length > 0

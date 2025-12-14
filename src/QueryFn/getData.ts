@@ -1,6 +1,6 @@
 import { fetchAndParseCSV } from '@undp/data-viz/fetchAndParseData';
 
-import { DataType, FormattedDataType } from '@/types';
+import { DataType } from '@/types';
 
 const getPercentage = (value?: number, total?: number) =>
   value != null && total != null && value != undefined && total != undefined
@@ -9,7 +9,7 @@ const getPercentage = (value?: number, total?: number) =>
 
 export const getData = async () => {
   const response = await fetchAndParseCSV('./data/data.csv');
-  const data = (response as DataType[])
+  const completeData = (response as DataType[])
     .filter(d => d.Typeofoccupation === 'Judges')
     .map(d => ({
       ...d,
@@ -25,5 +25,21 @@ export const getData = async () => {
       group_bPercentage: getPercentage(d.group_b, d.total),
       group_cPercentage: getPercentage(d.group_c, d.total),
     }));
-  return data as FormattedDataType[];
+  const uniqueCountries = [...new Set(completeData.map(d => d.ISOalpha3))];
+  const courtTypes = [...new Set(completeData.map(d => d.court))];
+  const latestData = uniqueCountries
+    .map(country => {
+      const countryLatestDataByCourts = courtTypes.map(courtType => {
+        const countryData = completeData.filter(
+          d => d.ISOalpha3 === country && d.court === courtType,
+        );
+        const latestYear = Math.max(...countryData.map(d => d.TimePeriod));
+        const latestData = countryData.find(d => d.TimePeriod === latestYear);
+        return latestData;
+      });
+      return countryLatestDataByCourts;
+    })
+    .flat()
+    .filter(d => d != undefined);
+  return { completeData, latestData };
 };

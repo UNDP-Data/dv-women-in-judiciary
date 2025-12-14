@@ -3,7 +3,7 @@ import type { AnyRootRoute } from '@tanstack/react-router';
 import { H2 } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 
-import DataExplorerWidget from '@/DataExplorer';
+import DataExplorerWidget from '@/components/DataExplorer';
 import DataDownloadCard from '@/components/DataDownloadCard';
 
 export function DataExplorer() {
