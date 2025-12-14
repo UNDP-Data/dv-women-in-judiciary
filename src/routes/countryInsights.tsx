@@ -33,7 +33,7 @@ export function CountryInsights() {
 
   if (isError) return <>Error</>;
   if (!data) return <div>No data</div>;
-  const countryData = data.filter(d => d.GeoAreaName === country);
+  const countryData = data.completeData.filter(d => d.GeoAreaName === country);
   const latestYear = Math.max(...countryData.map(d => d.TimePeriod));
   const latestDataAllCourt = countryData.find(
     d => d.TimePeriod === latestYear && d.court === 'total',
@@ -56,10 +56,12 @@ export function CountryInsights() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange={(d: any) => updateCountry(d.value)}
         value={{ label: country, value: country }}
-        options={[...new Set(data.map(d => d.GeoAreaName))].map(d => ({
-          label: d,
-          value: d,
-        }))}
+        options={[...new Set(data.completeData.map(d => d.GeoAreaName))].map(
+          d => ({
+            label: d,
+            value: d,
+          }),
+        )}
         size='sm'
         variant='light'
         isSearchable
