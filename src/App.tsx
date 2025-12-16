@@ -46,7 +46,7 @@ function App() {
   return (
     <div>
       <div className='min-h-[600px] flex flex-col justify-center bg-cover bg-center bg-no-repeat bg-[url("/imgs/hero-bg.webp")]'>
-        <div className='px-6 sm:px-36 w-[70%]'>
+        <div className='px-6 sm:px-36 w-[100%] sm:w-[70%]'>
           <H1
             marginBottom='none'
             className='font-heading text-[1.8rem] sm:text-[4.25rem]! leading-[1.1] text-primary-gray-700'
