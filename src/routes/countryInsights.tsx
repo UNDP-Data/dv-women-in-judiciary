@@ -50,8 +50,8 @@ export function CountryInsights() {
     latestDataAllCourt?.above_65Percentage,
   ].filter(d => d !== undefined && d !== null);
   return (
-    <div className='page-container px-6 sm:px-16 my-16'>
-      <Spacer size='2xl' />
+    <div className='page-container px-4 sm:px-24 my-16'>
+      <Spacer size='7xl' />
       <H2 className='font-heading uppercase' marginBottom='none'>
         Country Insights
       </H2>
@@ -350,7 +350,7 @@ export function CountryInsights() {
       </div>
       <Spacer size='4xl' />
       <DataDownloadCard />
-      <Spacer size='4xl' />
+      <Spacer size='7xl' />
     </div>
   );
 }
