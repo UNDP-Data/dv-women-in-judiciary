@@ -2,11 +2,14 @@ import { createRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { AnyRootRoute } from '@tanstack/react-router';
 import { Spinner } from '@undp/design-system-react/Spinner';
-import { H2 } from '@undp/design-system-react/Typography';
+import { H2, H4, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
-import { DonutChart } from '@undp/data-viz/DonutChart';
-import { SimpleBarGraph } from '@undp/data-viz/BarGraph';
+import { UnitChart } from '@undp/data-viz/UnitChart';
+import { SimpleBarGraph, StackedBarGraph } from '@undp/data-viz/BarGraph';
+import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
+import { numberFormattingFunction } from '@undp/data-viz/utils';
+import { transformDataForGraph } from '@undp/data-viz/transformData';
 
 import DataDownloadCard from '@/components/DataDownloadCard';
 import { getData } from '@/QueryFn/getData';
@@ -14,7 +17,6 @@ import {
   useCountryInsightsActions,
   useCountryInsightsStore,
 } from '@/stores/countryInsightsStore';
-import { FormattedDataType } from '@/types';
 
 function useData() {
   return useQuery({
@@ -33,17 +35,19 @@ export function CountryInsights() {
 
   if (isError) return <>Error</>;
   if (!data) return <div>No data</div>;
-  const countryData = data.completeData.filter(d => d.GeoAreaName === country);
-  const latestYear = Math.max(...countryData.map(d => d.TimePeriod));
-  const latestDataAllCourt = countryData.find(
-    d => d.TimePeriod === latestYear && d.court === 'total',
-  ) as FormattedDataType;
+  const countryData = data.completeData
+    .filter(d => d.GeoAreaName === country)
+    .sort((a, b) => a.TimePeriod - b.TimePeriod);
+  const countryLatestData = data.latestData.filter(
+    d => d.GeoAreaName === country,
+  );
+  const latestDataAllCourt = countryLatestData.find(d => d.court === 'total');
   const ageDistributionData = [
-    latestDataAllCourt.age_under_35Percentage,
-    latestDataAllCourt.between_35_44Percentage,
-    latestDataAllCourt.between_45_54Percentage,
-    latestDataAllCourt.between_55_64Percentage,
-    latestDataAllCourt.above_65Percentage,
+    latestDataAllCourt?.age_under_35Percentage,
+    latestDataAllCourt?.between_35_44Percentage,
+    latestDataAllCourt?.between_45_54Percentage,
+    latestDataAllCourt?.between_55_64Percentage,
+    latestDataAllCourt?.above_65Percentage,
   ].filter(d => d !== undefined && d !== null);
   return (
     <div className='page-container px-6 sm:px-16 my-16'>
@@ -68,74 +72,242 @@ export function CountryInsights() {
       />
       <Spacer size='xl' />
       <div className='flex gap-4 flex-wrap items-stretch'>
-        <div className='grow shrink-0 w-[calc(50%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
-          <DonutChart
-            graphTitle={`Overall gender distribution (${latestYear})`}
+        <div className='bg-[#F96445] grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <P
+            className='text-[var(--white)] font-bold'
+            marginBottom='none'
+            size='lg'
+          >
+            Female representation{' '}
+            {latestDataAllCourt?.TimePeriod && (
+              <span className='px-1 bg-[rgba(255,255,255,0.2)]'>
+                {latestDataAllCourt.TimePeriod}
+              </span>
+            )}
+          </P>
+          <Spacer size='lg' />
+          <H4 className='text-[var(--white)]'>
+            {numberFormattingFunction(
+              latestDataAllCourt?.femalePercentage,
+              'NA',
+              1,
+              undefined,
+              '%',
+            )}
+          </H4>
+          {latestDataAllCourt?.femalePercentage && (
+            <UnitChart
+              backgroundColor={false}
+              data={[
+                {
+                  label: 'Female',
+                  value: latestDataAllCourt?.femalePercentage || 0,
+                },
+                {
+                  label: 'Male',
+                  value: latestDataAllCourt?.malePercentage || 0,
+                },
+              ]}
+              colors={['#FFFFFF', '#FFFFFF50']}
+              showColorScale={false}
+              showStrokeForWhiteDots={false}
+            />
+          )}
+        </div>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <SimpleBarGraph
+            graphTitle='Female Representation over time'
             backgroundColor={false}
-            data={[
-              {
-                label: 'Male',
-                size:
-                  countryData.find(
-                    d => d.TimePeriod === latestYear && d.court === 'total',
-                  )?.malePercentage || 0,
-              },
-              {
-                label: 'Female',
-                size:
-                  countryData.find(
-                    d => d.TimePeriod === latestYear && d.court === 'total',
-                  )?.femalePercentage || 0,
-              },
-            ]}
-            radius={100}
-            strokeWidth={25}
+            data={transformDataForGraph(
+              countryData.filter(d => d.court === 'total'),
+              'barChart',
+              [
+                {
+                  chartConfigId: 'label',
+                  columnId: 'TimePeriod',
+                },
+                {
+                  chartConfigId: 'size',
+                  columnId: 'femalePercentage',
+                },
+              ],
+            )}
+            orientation='vertical'
+            suffix='%'
+            maxValue={100}
+            noOfTicks={3}
+            showValues
+            colors='#F96445'
+            refValues={[{ value: 50, text: 'Gender parity' }]}
           />
         </div>
-        <div className='grow shrink-0 w-[calc(50%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle={`Female Representation by Court Type (${latestYear})`}
+            graphTitle='Female Representation over time'
+            backgroundColor={false}
+            data={transformDataForGraph(
+              countryData.filter(d => d.court === 'total'),
+              'barChart',
+              [
+                {
+                  chartConfigId: 'label',
+                  columnId: 'TimePeriod',
+                },
+                {
+                  chartConfigId: 'size',
+                  columnId: 'SDG1671C_Female',
+                },
+              ],
+            )}
+            orientation='vertical'
+            maxValue={2}
+            noOfTicks={3}
+            showValues
+            height={320}
+            colors='#00689D'
+            refValues={[{ value: 1, text: 'Gender parity' }]}
+          />
+        </div>
+        <div className='bg-[#00689D] flex flex-col grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <P
+            className='text-[var(--white)] font-bold'
+            marginBottom='none'
+            size='lg'
+          >
+            SDG 16.7.1{' '}
+            {latestDataAllCourt?.TimePeriod && (
+              <span className='px-1 bg-[rgba(255,255,255,0.2)]'>
+                {latestDataAllCourt.TimePeriod}
+              </span>
+            )}
+          </P>
+          <div className='grow items-center flex'>
+            <H2 className='text-[var(--white)]' marginBottom='none'>
+              {numberFormattingFunction(
+                latestDataAllCourt?.SDG1671C_Female,
+                'NA',
+                2,
+              )}
+            </H2>
+          </div>
+        </div>
+        <div className='grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <SimpleBarGraph
+            graphTitle='Female Representation by Court'
             backgroundColor={false}
             orientation='horizontal'
-            data={[
-              {
-                label: 'Supreme Court',
-                size:
-                  countryData.find(
-                    d => d.TimePeriod === latestYear && d.court === 'supreme',
-                  )?.femalePercentage || 0,
-              },
-              {
-                label: 'High Court',
-                size:
-                  countryData.find(
-                    d => d.TimePeriod === latestYear && d.court === 'high',
-                  )?.femalePercentage || 0,
-              },
-              {
-                label: 'Lower Court',
-                size:
-                  countryData.find(
-                    d => d.TimePeriod === latestYear && d.court === 'low',
-                  )?.femalePercentage || 0,
-              },
-            ]}
-            trackColor='#EDEFF0'
+            data={
+              countryLatestData.length > 0
+                ? [
+                    {
+                      label: 'All courts',
+                      size:
+                        countryLatestData.find(d => d.court === 'total')
+                          ?.femalePercentage || 0,
+                    },
+                    {
+                      label: 'Supreme courts',
+                      size: countryLatestData.find(d => d.court === 'supreme')
+                        ?.femalePercentage,
+                    },
+                    {
+                      label: 'Higher courts',
+                      size: countryLatestData.find(d => d.court === 'high')
+                        ?.femalePercentage,
+                    },
+                    {
+                      label: 'Lower courts',
+                      size: countryLatestData.find(d => d.court === 'low')
+                        ?.femalePercentage,
+                    },
+                  ]
+                : []
+            }
             maxValue={100}
-            showTicks={false}
-            styles={{
-              yAxis: {
-                axis: { display: 'none' },
-              },
-            }}
-            topMargin={0}
-            maxBarThickness={40}
-            bottomMargin={0}
+            height={320}
+            labelOrder={[
+              'All courts',
+              'Supreme courts',
+              'Higher courts',
+              'Lower courts',
+            ]}
+            refValues={[{ value: 50, text: 'Gender parity' }]}
           />
         </div>
-        <div className='grow shrink-0 w-[calc(50%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <MultiLineAltChart
+            graphTitle='Female Representation by Court'
+            backgroundColor={false}
+            data={transformDataForGraph(countryData, 'multiLineAltChart', [
+              {
+                chartConfigId: 'label',
+                columnId: 'court',
+              },
+              {
+                chartConfigId: 'color',
+                columnId: 'court',
+              },
+              {
+                chartConfigId: 'y',
+                columnId: 'femalePercentage',
+              },
+              {
+                chartConfigId: 'date',
+                columnId: 'TimePeriod',
+              },
+            ])}
+            refValues={[{ value: 50, text: 'Gender parity' }]}
+            showColorScale
+            colorDomain={['total', 'supreme', 'high', 'low']}
+            showDots
+            rightMargin={75}
+            maxValue={100}
+            showNAColor={false}
+          />
+        </div>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <StackedBarGraph
+            graphTitle='Age distribution over time (All courts)'
+            backgroundColor={false}
+            orientation='vertical'
+            data={
+              ageDistributionData.length > 0
+                ? transformDataForGraph(
+                    countryData.filter(d => d.court === 'total'),
+                    'stackedBarChart',
+                    [
+                      {
+                        chartConfigId: 'label',
+                        columnId: 'TimePeriod',
+                      },
+                      {
+                        chartConfigId: 'size',
+                        columnId: [
+                          'age_under_35Percentage',
+                          'between_35_44Percentage',
+                          'between_45_54Percentage',
+                          'between_55_64Percentage',
+                          'above_65Percentage',
+                        ],
+                      },
+                    ],
+                  )
+                : []
+            }
+            maxValue={100}
+            height={320}
+            colorDomain={[
+              'Under 35',
+              'Between 35-44',
+              'Between 45-54',
+              'Between 55-64',
+              'Above 65',
+            ]}
+          />
+        </div>
+        <div className='grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle={`Age Distribution (All Judicial Staff) (${latestYear})`}
+            graphTitle='Age distribution (All courts)'
             backgroundColor={false}
             orientation='horizontal'
             data={
@@ -143,29 +315,36 @@ export function CountryInsights() {
                 ? [
                     {
                       label: 'Under 35',
-                      size: latestDataAllCourt.age_under_35Percentage || 0,
+                      size: latestDataAllCourt?.age_under_35Percentage,
                     },
                     {
                       label: 'Between 35-44',
-                      size: latestDataAllCourt.between_35_44Percentage || 0,
+                      size: latestDataAllCourt?.between_35_44Percentage,
                     },
                     {
                       label: 'Between 45-54',
-                      size: latestDataAllCourt.between_45_54Percentage || 0,
+                      size: latestDataAllCourt?.between_45_54Percentage,
                     },
                     {
                       label: 'Between 55-64',
-                      size: latestDataAllCourt.between_55_64Percentage || 0,
+                      size: latestDataAllCourt?.between_55_64Percentage,
                     },
                     {
                       label: 'Above 65',
-                      size: latestDataAllCourt.above_65Percentage || 0,
+                      size: latestDataAllCourt?.above_65Percentage,
                     },
                   ]
                 : []
             }
-            trackColor='#EDEFF0'
-            maxBarThickness={40}
+            labelOrder={[
+              'Under 35',
+              'Between 35-44',
+              'Between 45-54',
+              'Between 55-64',
+              'Above 65',
+            ]}
+            maxValue={100}
+            height={320}
           />
         </div>
       </div>
