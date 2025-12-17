@@ -22,7 +22,7 @@
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-router": "^1.141.1",
     "@undp/data-viz": "^2.1.7",
-    "@undp/design-system-react": "^1.5.3",
+    "@undp/design-system-react": "^1.5.5",
     "ajv": "^8.17.1",
     "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
