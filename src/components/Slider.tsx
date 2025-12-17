@@ -13,6 +13,15 @@ export default function Slider() {
     <div className='pt-6'>
       <VizCarousel
         slideNo
+        autoScroll
+        styles={{
+          progressBar: {
+            display: 'none',
+          },
+          progressBarBg: {
+            display: 'none',
+          },
+        }}
         slides={[
           {
             content: (
