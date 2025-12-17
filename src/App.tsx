@@ -12,7 +12,7 @@ import { H1, H2, H5, P } from '@undp/design-system-react/Typography';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@undp/design-system-react/Button';
 
-import Slider from './components/Sldier';
+import Slider from './components/Slider';
 import AnimatedGrid from './components/AnimatedGrid';
 
 const cards = [
@@ -24,7 +24,6 @@ const cards = [
       'Dive deep into data on gender representation in the judiciary worldwide.',
     link: 'Explore data',
     route: '/data-explorer',
-    cardColor: '#24B677',
   },
   {
     id: 3,
@@ -34,7 +33,6 @@ const cards = [
       'Explore trends and patterns on judicial gender representation across countries.',
     link: 'View insights',
     route: '/country-insights',
-    cardColor: '#296DDF',
   },
   {
     id: 4,
@@ -44,14 +42,20 @@ const cards = [
       'Access reports, research papers, and additional materials about women in judiciary systems globally.',
     link: 'Access resources',
     route: '/resources',
-    cardColor: '#8D8DFF',
   },
 ];
 
 function App() {
   return (
     <div>
-      <div className='bg-primary-gray-200'>
+      <div className='relative bg-primary-gray-200'>
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
+             bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
+          style={{
+            backgroundSize: '128px 128px',
+          }}
+        />
         <div className='min-h-[700px] flex flex-col gap-10 sm:flex-row justify-center items-center px-4 sm:px-24 mx-auto max-w-[1980px]'>
           <div className='w-[100%] sm:w-[50%]'>
             <H1
