@@ -77,6 +77,7 @@ function DataExplorerWidget() {
       <VisualizationWidget>
         <VisualizationWidgetHeader
           defaultValue='map'
+          className='border-primary-gray-300 border-b-1'
           onChange={d => {
             updateTab(d);
           }}
@@ -99,7 +100,7 @@ function DataExplorerWidget() {
           </VisualizationWidgetHeaderItem>
         </VisualizationWidgetHeader>
         <VisualizationWidgetBody>
-          <VisualizationWidgetBodySidebar className='w-[320px]! flex content-between'>
+          <VisualizationWidgetBodySidebar className='w-full border-0 sm:border-r sm:border-primary-gray-300 sm:max-w-[320px] flex content-between'>
             <div className='w-full'>
               <Activity mode={tab === 'disaggregations' ? 'visible' : 'hidden'}>
                 <P size='xs' marginBottom='2xs'>

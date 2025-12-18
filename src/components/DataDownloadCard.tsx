@@ -4,7 +4,14 @@ import { Download } from 'lucide-react';
 
 export default function DataDownloadCard() {
   return (
-    <div className='relative flex flex-col justify-between gap-8 w-full box-border px-8 py-16 bg-[var(--gray-200)]'>
+    <div
+      className='
+  relative flex flex-col justify-between gap-8 w-full box-border
+  pt-8 px-6 pb-[220px]
+  sm:px-8 sm:py-16
+  bg-[var(--gray-200)]
+'
+    >
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
              bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
