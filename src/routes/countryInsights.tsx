@@ -2,7 +2,7 @@ import { createRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { AnyRootRoute } from '@tanstack/react-router';
 import { Spinner } from '@undp/design-system-react/Spinner';
-import { H2, H4, P } from '@undp/design-system-react/Typography';
+import { H2, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { UnitChart } from '@undp/data-viz/UnitChart';
@@ -72,21 +72,21 @@ export function CountryInsights() {
       />
       <Spacer size='xl' />
       <div className='flex gap-4 flex-wrap items-stretch'>
-        <div className='bg-[#F96445] grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
-          <P
-            className='text-[var(--white)] font-bold'
-            marginBottom='none'
-            size='lg'
-          >
-            Female representation{' '}
-            {latestDataAllCourt?.TimePeriod && (
-              <span className='px-1 bg-[rgba(255,255,255,0.2)]'>
-                {latestDataAllCourt.TimePeriod}
-              </span>
-            )}
-          </P>
+        <div className='bg-[#F96445] grow shrink-0 w-[calc(33.33%-0.5rem)] min-h-[320px] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <div className='flex gap-2 items-center'>
+            <P className='text-[var(--white)]' marginBottom='none' size='xl'>
+              Female representation{' '}
+            </P>
+            <div>
+              {latestDataAllCourt?.TimePeriod && (
+                <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
+                  {latestDataAllCourt.TimePeriod}
+                </span>
+              )}
+            </div>
+          </div>
           <Spacer size='lg' />
-          <H4 className='text-[var(--white)]'>
+          <H2 className='text-[var(--white)]' marginBottom='base'>
             {numberFormattingFunction(
               latestDataAllCourt?.femalePercentage,
               'NA',
@@ -94,7 +94,7 @@ export function CountryInsights() {
               undefined,
               '%',
             )}
-          </H4>
+          </H2>
           {latestDataAllCourt?.femalePercentage && (
             <UnitChart
               backgroundColor={false}
@@ -116,7 +116,7 @@ export function CountryInsights() {
         </div>
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle='Female Representation over time'
+            graphTitle='Female representation over time'
             backgroundColor={false}
             data={transformDataForGraph(
               countryData.filter(d => d.court === 'total'),
@@ -134,16 +134,19 @@ export function CountryInsights() {
             )}
             orientation='vertical'
             suffix='%'
+            leftMargin={100}
+            rightMargin={100}
             maxValue={100}
             noOfTicks={3}
-            showValues
+            showValues={false}
+            barPadding={0.1}
             colors='#F96445'
             refValues={[{ value: 50, text: 'Gender parity' }]}
           />
         </div>
-        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] min-h-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle='Female Representation over time'
+            graphTitle='SDG indicator 16.7.1 over time'
             backgroundColor={false}
             data={transformDataForGraph(
               countryData.filter(d => d.court === 'total'),
@@ -162,27 +165,38 @@ export function CountryInsights() {
             orientation='vertical'
             maxValue={2}
             noOfTicks={3}
-            showValues
+            showValues={false}
+            leftMargin={100}
+            rightMargin={100}
             height={320}
-            colors='#00689D'
+            colors='#296DDF'
             refValues={[{ value: 1, text: 'Gender parity' }]}
           />
         </div>
-        <div className='bg-[#00689D] flex flex-col grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+        <div className='bg-[#296DDF] flex flex-col grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+          <div className='flex gap-2 items-center'>
+            <P className='text-[var(--white)]' marginBottom='none' size='xl'>
+              SDG indicator 16.7.1{' '}
+            </P>
+            <div>
+              {latestDataAllCourt?.TimePeriod && (
+                <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
+                  {latestDataAllCourt.TimePeriod}
+                </span>
+              )}
+            </div>
+          </div>
           <P
-            className='text-[var(--white)] font-bold'
+            size='base'
             marginBottom='none'
-            size='lg'
+            className='text-primary-white opacity-[0.6]'
           >
-            SDG 16.7.1{' '}
-            {latestDataAllCourt?.TimePeriod && (
-              <span className='px-1 bg-[rgba(255,255,255,0.2)]'>
-                {latestDataAllCourt.TimePeriod}
-              </span>
-            )}
+            Proportions of positions in national and local institutions,
+            including (a) the legislatures; (b) the public service; and (c) the
+            judiciary, compared to national distributions by sex
           </P>
           <div className='grow items-center flex'>
-            <H2 className='text-[var(--white)]' marginBottom='none'>
+            <H2 className='text-[var(--white)]' marginBottom='base'>
               {numberFormattingFunction(
                 latestDataAllCourt?.SDG1671C_Female,
                 'NA',
@@ -193,7 +207,7 @@ export function CountryInsights() {
         </div>
         <div className='grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle='Female Representation by Court'
+            graphTitle='Female representation by court'
             backgroundColor={false}
             orientation='horizontal'
             data={
@@ -225,6 +239,9 @@ export function CountryInsights() {
             }
             maxValue={100}
             height={320}
+            colors='#04BAAB'
+            showValues
+            showTicks={false}
             labelOrder={[
               'All courts',
               'Supreme courts',
@@ -234,9 +251,9 @@ export function CountryInsights() {
             refValues={[{ value: 50, text: 'Gender parity' }]}
           />
         </div>
-        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
+        <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] min-h-[320px] bg-[var(--gray-100)] p-4'>
           <MultiLineAltChart
-            graphTitle='Female Representation by Court'
+            graphTitle='Female representation by court over time'
             backgroundColor={false}
             data={transformDataForGraph(countryData, 'multiLineAltChart', [
               {
@@ -258,9 +275,11 @@ export function CountryInsights() {
             ])}
             refValues={[{ value: 50, text: 'Gender parity' }]}
             showColorScale
+            colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445']}
             colorDomain={['total', 'supreme', 'high', 'low']}
+            noOfYTicks={3}
             showDots
-            rightMargin={75}
+            rightMargin={125}
             maxValue={100}
             showNAColor={false}
           />
@@ -270,6 +289,7 @@ export function CountryInsights() {
             graphTitle='Age distribution over time (All courts)'
             backgroundColor={false}
             orientation='vertical'
+            colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445', '#c4c4c4']}
             data={
               ageDistributionData.length > 0
                 ? transformDataForGraph(
@@ -345,6 +365,7 @@ export function CountryInsights() {
             ]}
             maxValue={100}
             height={320}
+            colors='#296DDF'
           />
         </div>
       </div>
