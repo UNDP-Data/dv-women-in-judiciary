@@ -20,7 +20,6 @@ import { SimpleLineChart } from '@undp/data-viz/SimpleLineChart';
 import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
 import { DumbbellChart } from '@undp/data-viz/DumbbellChart';
 import { SegmentedControl } from '@undp/design-system-react/SegmentedControl';
-import { Separator } from '@undp/design-system-react/Separator';
 import { numberFormattingFunction } from '@undp/data-viz/utils';
 
 import { getData } from '@/QueryFn/getData';
@@ -92,7 +91,7 @@ function DataExplorerWidget() {
           </VisualizationWidgetHeaderItem>
         </VisualizationWidgetHeader>
         <VisualizationWidgetBody>
-          <VisualizationWidgetBodySidebar>
+          <VisualizationWidgetBodySidebar className='w-[320px]!'>
             <div className='w-full'>
               <Activity mode={tab === 'disaggregations' ? 'visible' : 'hidden'}>
                 <P size='xs' marginBottom='2xs'>
@@ -203,7 +202,7 @@ function DataExplorerWidget() {
             </div>
           </VisualizationWidgetBodySidebar>
           <VisualizationWidgetBodyContent>
-            <div className='h-[576px] w-full bg-white'>
+            <div className='h-[706px] w-full bg-white'>
               <div className='h-full p-4'>
                 {tab === 'map' && (
                   <ChoroplethMap
@@ -235,56 +234,57 @@ function DataExplorerWidget() {
                             .map(d => d.ISOalpha3)
                         : []
                     }
+                    styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
                       return (
-                        <div className='w-[280px]'>
-                          <P
-                            size='sm'
-                            marginBottom='none'
-                            className='font-bold'
-                          >
+                        <div className='w-[280px] bg-primary-white'>
+                          <div className='font-bold p-2 bg-primary-gray-300 uppercase text-xs'>
                             {d.data.GeoAreaName}
-                          </P>
+                          </div>
                           <Spacer size='base' />
-                          <div className='flex gap-4 justify-between'>
+                          <div className='flex gap-4 justify-between p-2'>
                             <P marginBottom='none' size='sm'>
                               {indicator.label} - {courtType.label} (
                               {d.data.TimePeriod})
                             </P>
-                            <P marginBottom='none' size='sm'>
+                            <P
+                              marginBottom='none'
+                              size='sm'
+                              className='font-bold'
+                            >
                               {numberFormattingFunction(
                                 d.data[indicator.value],
                               )}
                             </P>
                           </div>
-                          <Spacer size='base' />
-                          <Separator />
-                          <Spacer size='base' />
-                          <SimpleLineChart
-                            height={150}
-                            backgroundColor={false}
-                            data={transformDataForGraph(
-                              data.completeData.filter(
-                                el =>
-                                  el.court === courtType.value &&
-                                  el.GeoAreaName === d.data.GeoAreaName,
-                              ),
-                              'lineChart',
-                              [
-                                {
-                                  chartConfigId: 'date',
-                                  columnId: 'TimePeriod',
-                                },
-                                {
-                                  chartConfigId: 'y',
-                                  columnId: indicator.value,
-                                },
-                              ],
-                            )}
-                            maxValue={100}
-                            noOfXTicks={2}
-                            noOfYTicks={2}
-                          />
+                          <div className='p-2'>
+                            <SimpleLineChart
+                              height={150}
+                              backgroundColor={false}
+                              data={transformDataForGraph(
+                                data.completeData.filter(
+                                  el =>
+                                    el.court === courtType.value &&
+                                    el.GeoAreaName === d.data.GeoAreaName,
+                                ),
+                                'lineChart',
+                                [
+                                  {
+                                    chartConfigId: 'date',
+                                    columnId: 'TimePeriod',
+                                  },
+                                  {
+                                    chartConfigId: 'y',
+                                    columnId: indicator.value,
+                                  },
+                                ],
+                              )}
+                              maxValue={100}
+                              noOfXTicks={2}
+                              noOfYTicks={2}
+                              lineColor='#296DDF'
+                            />
+                          </div>
                         </div>
                       );
                     }}
@@ -329,6 +329,8 @@ function DataExplorerWidget() {
                     truncateBy={20}
                     sortData='desc'
                     backgroundColor={false}
+                    showTicks={false}
+                    colors='#296DDF'
                     animate={{
                       duration: 0.5,
                       once: true,
@@ -365,6 +367,7 @@ function DataExplorerWidget() {
                     )}
                     animate
                     backgroundColor={false}
+                    colors={['#296DDF']}
                     showDots
                     highlightedLines={countries}
                   />
@@ -432,6 +435,8 @@ function DataExplorerWidget() {
                             'Age 65+',
                           ]
                     }
+                    colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445']}
+                    connectorStrokeWidth={1}
                     orientation='horizontal'
                     showValues={false}
                     radius={5}
