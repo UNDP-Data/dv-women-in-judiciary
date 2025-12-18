@@ -55,7 +55,8 @@ export default function Slider() {
                     graphTitle:
                       'Ratio of women’s representation in public service and the judiciary relative to their share of the working age population',
                     orientation: 'horizontal',
-                    colors: ['#8D8DFF'],
+                    colors: ['#04BAAB'],
+                    animate: true,
                     customLayers: [
                       {
                         position: 'before',
@@ -132,7 +133,7 @@ export default function Slider() {
                     refValues: [
                       {
                         value: 1,
-                        text: 'Gender Parity',
+                        text: 'Gender parity',
                         color: '#000',
                       },
                     ],
@@ -231,10 +232,11 @@ export default function Slider() {
                       'Ratio of women’s representation in public service and the judiciary relative to their share of the working age population',
                     orientation: 'horizontal',
                     colors: ['#F96445'],
+                    animate: true,
                     refValues: [
                       {
                         value: 1,
-                        text: 'Gender Parity',
+                        text: 'Gender parity',
                         color: '#000',
                       },
                     ],
@@ -334,10 +336,11 @@ export default function Slider() {
                       'Ratio of women’s representation in public service and the judiciary relative to their share of the working age population, by level of court',
                     orientation: 'horizontal',
                     colors: ['#296DDF'],
+                    animate: true,
                     refValues: [
                       {
                         value: 1,
-                        text: 'Gender Parity',
+                        text: 'Gender parity',
                         color: '#000',
                       },
                     ],
