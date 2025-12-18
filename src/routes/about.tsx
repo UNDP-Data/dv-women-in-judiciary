@@ -6,13 +6,13 @@ import { Spacer } from '@undp/design-system-react/Spacer';
 export function About() {
   return (
     <>
-      <div className='page-container px-6 sm:px-16 my-16'>
-        <Spacer size='2xl' />
+      <div className='page-container px-4 sm:px-24 my-16'>
+        <Spacer size='7xl' />
         <H2 className='font-heading uppercase' marginBottom='none'>
           About
         </H2>
         <Spacer size='4xl' />
-        <P size='lg'>
+        <P>
           Lorem ipsum dolor sit amet consectetur. Pharetra mi purus porttitor
           nibh diam in. Egestas ut id donec diam risus elementum lectus
           facilisis nec. Quis ut amet odio ultrices. Ullamcorper leo consectetur
@@ -52,6 +52,7 @@ export function About() {
           <br />
           Contact us at <A href='mailto:email@undp.org'>email@undp.org</A>
         </P>
+        <Spacer size='7xl' />
       </div>
     </>
   );

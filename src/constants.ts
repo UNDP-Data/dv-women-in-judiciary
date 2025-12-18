@@ -1,3 +1,5 @@
+import { DisaggregationConfig, DisaggregationType } from './types';
+
 export const INDICATORS_OPTIONS = [
   {
     label: 'Sex representation',
@@ -43,3 +45,19 @@ export const INDICATORS_OPTIONS = [
     ],
   },
 ];
+
+export const DISAGGREGATION_CONFIG: Record<
+  DisaggregationType,
+  DisaggregationConfig
+> = {
+  gender: {
+    labels: ['Male', 'Female'],
+    colors: ['#296DDF', '#04BAAB'],
+    showNA: false,
+  },
+  age: {
+    labels: ['Age under 35', 'Age 35-44', 'Age 45-54', 'Age 55-64', 'Age 65+'],
+    colors: ['#296DDF', '#04BAAB', '#934DB0', '#F96445', '#c4c4c4'],
+    showNA: true,
+  },
+};

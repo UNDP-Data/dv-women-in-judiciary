@@ -5,7 +5,7 @@ type Actions = {
   updateIndicator: (d: { value: string; label: string }) => void;
   updateCourtType: (d: { value: string; label: string }) => void;
   updateRegion: (d?: string) => void;
-  updateDisaggregationType: (d: 'sex' | 'age') => void;
+  updateDisaggregationType: (d: 'gender' | 'age') => void;
   updateCountries: (d?: string[]) => void;
 };
 
@@ -25,7 +25,7 @@ export const useDataExplorerStore = create<Store>(set => ({
     label: 'Female representation in judicial positions (%)',
     value: 'femalePercentage',
   },
-  disaggregationType: 'sex',
+  disaggregationType: 'gender',
   courtType: {
     label: 'All courts',
     value: 'total',
@@ -35,7 +35,7 @@ export const useDataExplorerStore = create<Store>(set => ({
   actions: {
     updateTab: (d = 'map') => set({ tab: d }),
     updateIndicator: d => set({ indicator: d }),
-    updateDisaggregationType: (d = 'sex') => set({ disaggregationType: d }),
+    updateDisaggregationType: (d = 'gender') => set({ disaggregationType: d }),
     updateCourtType: d => set({ courtType: d }),
     updateRegion: (d?: string) => set({ region: d }),
     updateCountries: (d?: string[]) => set({ countries: d }),

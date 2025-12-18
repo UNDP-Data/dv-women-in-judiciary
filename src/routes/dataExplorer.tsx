@@ -9,8 +9,8 @@ import DataDownloadCard from '@/components/DataDownloadCard';
 export function DataExplorer() {
   return (
     <>
-      <div className='page-container px-6 sm:px-16 my-16'>
-        <Spacer size='2xl' />
+      <div className='page-container px-4 sm:px-24 my-16'>
+        <Spacer size='7xl' />
         <H2 className='font-heading uppercase' marginBottom='none'>
           Data Explorer
         </H2>
@@ -18,7 +18,7 @@ export function DataExplorer() {
         <DataExplorerWidget />
         <Spacer size='4xl' />
         <DataDownloadCard />
-        <Spacer size='4xl' />
+        <Spacer size='7xl' />
       </div>
     </>
   );

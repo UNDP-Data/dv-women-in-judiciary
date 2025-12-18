@@ -9,7 +9,11 @@ import { Link } from '@tanstack/react-router';
 export default function HeaderEl() {
   return (
     <Header className='justfify-between'>
-      <HeaderLogoUnit hyperlink='./' siteName='Women in Judiciary' />
+      <HeaderLogoUnit
+        hyperlink='./'
+        siteName='Women in Judiciary'
+        siteSubName='Policy Centre for Governance'
+      />
       <HeaderMainNavUnit>
         <HeaderMenuUnit className='md:justify-end'>
           <Link to='/data-explorer'>Data explorer</Link>
