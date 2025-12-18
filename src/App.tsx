@@ -24,6 +24,7 @@ const cards = [
       'Dive deep into data on gender representation in the judiciary worldwide.',
     link: 'Explore data',
     route: '/data-explorer',
+    icon: '/imgs/icon-01.svg',
   },
   {
     id: 3,
@@ -33,6 +34,7 @@ const cards = [
       'Explore trends and patterns on judicial gender representation across countries.',
     link: 'View insights',
     route: '/country-insights',
+    icon: '/imgs/icon-02.svg',
   },
   {
     id: 4,
@@ -42,6 +44,7 @@ const cards = [
       'Access reports, research papers, and additional materials about women in judiciary systems globally.',
     link: 'Access resources',
     route: '/resources',
+    icon: '/imgs/icon-03.svg',
   },
 ];
 
@@ -82,8 +85,25 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='py-20 px-4 sm:px-24 mx-auto max-w-[1980px]'>
-        <div className='gap-6'>
+      <div className='relative bg-primary-white h-[700px] flex items-center px-4 sm:px-[288px] mx-auto max-w-[1980px]'>
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
+             bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
+          style={{
+            backgroundSize: '128px 128px',
+          }}
+        />
+        <img
+          className='absolute top-10 left-0'
+          alt='abstract shapes'
+          src='/imgs/shape-01.svg'
+        />
+        <img
+          className='absolute bottom-0 right-[0]'
+          alt='abstract shapes'
+          src='/imgs/shape-02.svg'
+        />
+        <div className='gap-6 z-10'>
           <H2>
             Women remain underrepresented in top decision-making positions in
             the judiciary
@@ -117,11 +137,24 @@ function App() {
                 <Card
                   size='full'
                   variant='without-image'
-                  className='bg-primary-gray-200 border-none h-full pt-4 min-h-[300px] relative overflow-hidden'
+                  className='relative bg-primary-gray-200 border-none h-full pt-4 min-h-[300px] relative overflow-hidden'
                 >
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
+             bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
+                    style={{
+                      backgroundSize: '128px 128px',
+                    }}
+                  />
                   <CardHeader>
+                    <img
+                      src={card.icon}
+                      alt=''
+                      className='w-20 h-20 mx-6 mt-2'
+                      aria-hidden
+                    />
                     <CardTitle>{card.title}</CardTitle>
-                    <CardDescription className='mb-16'>
+                    <CardDescription className='mb-8'>
                       {card.description}
                     </CardDescription>
                   </CardHeader>
