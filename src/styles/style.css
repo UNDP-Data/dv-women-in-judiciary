@@ -13,8 +13,3 @@
 .font-heading {
   font-family: 'SohneBreit', sans-serif;
 }
-
-rect.hbar {
-  mask: url(#mask-stripe);
-  fill: var(--gray-700);
-}
