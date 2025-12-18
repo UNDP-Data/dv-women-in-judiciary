@@ -31,16 +31,21 @@ const AnimatedShapeGrid: React.FC = () => {
   const colors = [
     '#F7F7F7',
     '#F7F7F7',
+    '#F7F7F7',
+    '#04BAAB',
     '#296DDF',
-    '#082557',
     '#F96445',
-    '#F8C2D2',
-    '#F8C2D2',
+    '#934DB0',
   ];
+
+  const COLS = window.innerWidth > 1024 ? 8 : 4;
+  const ROWS = window.innerWidth > 1024 ? 6 : 3;
+  const CELL_COUNT = COLS * ROWS;
+
   const randomFill = (): FillType => (Math.random() < 1 ? 'gradient' : 'solid');
 
   const [shapes, setShapes] = useState<Shape[]>(() =>
-    Array(12)
+    Array(CELL_COUNT)
       .fill(null)
       .map((_, i) => ({
         id: i,
@@ -59,7 +64,7 @@ const AnimatedShapeGrid: React.FC = () => {
           fill: randomFill(),
         })),
       );
-    }, 1000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);
@@ -85,7 +90,13 @@ const AnimatedShapeGrid: React.FC = () => {
 
   return (
     <div className='flex items-center justify-center'>
-      <div className='grid grid-cols-4 grid-rows-3 gap-0 w-full max-w-4xl aspect-[4/3] overflow-hidden'>
+      <div
+        className='grid gap-0 w-full max-w-4xl aspect-[4/3] overflow-hidden'
+        style={{
+          gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${ROWS}, minmax(0, 1fr))`,
+        }}
+      >
         {shapes.map(shape => (
           <div
             key={shape.id}
