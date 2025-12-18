@@ -208,26 +208,13 @@ function DataExplorerWidget() {
                 />
               </Activity>
             </div>
-            {tab === 'map' ? (
+            {tab === 'map' || tab === 'ranks' || tab === 'disaggregations' ? (
               <div className='h-fit pr-10 text-primary-gray-600'>
                 <P size='xs' marginBottom='none'>
-                  Notes:
+                  The visualization shows the most recent data available for
+                  each country, so the years may differ between countries. Hover
+                  over a country to see its data details.
                 </P>
-
-                <ul className='list-disc pl-2 text-xs marker:text-[8px]'>
-                  <li>
-                    <P size='xs' marginBottom='none'>
-                      The map shows the most recent data available for each
-                      country, so the years may differ between countries. Hover
-                      over a country to see its data details.
-                    </P>
-                  </li>
-                  <li>
-                    <P size='xs' marginBottom='none'>
-                      Countries without available data are shown in light grey.
-                    </P>
-                  </li>
-                </ul>
               </div>
             ) : null}
           </VisualizationWidgetBodySidebar>
@@ -255,7 +242,16 @@ function DataExplorerWidget() {
                         ? [0.5, 0.75, 0.9, 1.1, 1.25, 1.5]
                         : [20, 40, 60, 80]
                     }
-                    footNote=''
+                    footNote={
+                      <P
+                        size='xs'
+                        marginBottom='none'
+                        className='text-primary-gray-600'
+                      >
+                        Countries without available data are shown in light
+                        grey.
+                      </P>
+                    }
                     mapNoDataColor='var(--gray-200)'
                     graphTitle={
                       <div className='flex gap-4 items-center'>
