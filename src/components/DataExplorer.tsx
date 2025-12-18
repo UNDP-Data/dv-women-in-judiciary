@@ -457,6 +457,7 @@ function DataExplorerWidget() {
                       data.completeData.filter(
                         d =>
                           d.court === courtType.value &&
+                          d.TimePeriod >= 2015 &&
                           (region ? d.Region === region : true) &&
                           ((countries || []).length > 0
                             ? (countries || []).includes(d.GeoAreaName)
