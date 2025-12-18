@@ -1,24 +1,34 @@
 import { Button } from '@undp/design-system-react/Button';
-import { H5, P } from '@undp/design-system-react/Typography';
+import { H4, P } from '@undp/design-system-react/Typography';
 import { Download } from 'lucide-react';
 
 export default function DataDownloadCard() {
   return (
-    <div className='flex items-center justify-between gap-4 w-full box-border p-8 bg-[var(--blue-700)]'>
-      <div className='flex flex-col gap-2'>
-        <H5 className=' text-[var(--white)]' marginBottom='none'>
-          Download data
-        </H5>
-        <P className=' text-[var(--white)]' marginBottom='none' size='sm'>
+    <div className='relative flex flex-col justify-between gap-8 w-full box-border px-8 py-16 bg-[var(--gray-200)]'>
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
+             bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
+        style={{
+          backgroundSize: '128px 128px',
+        }}
+      />
+      <img
+        className='absolute bottom-0 right-0'
+        alt='abstract shapes'
+        src='/imgs/shape-03.svg'
+      />
+      <div>
+        <H4 marginBottom='xs'>Download data</H4>
+        <P marginBottom='none'>
           Access the full dataset including all countries, indicators, and
           historical data.
         </P>
       </div>
       <Button
-        variant='tertiary'
-        className='bg-[var(--blue-600)] text-[var(--white)] hover:bg-[var(--blue-500)] cursor-pointer'
+        variant='link-without-icon'
+        className='cursor-pointer w-fit p-0 m-0'
       >
-        <Download stroke='white' />
+        <Download stroke='red' />
         Download data
       </Button>
     </div>
