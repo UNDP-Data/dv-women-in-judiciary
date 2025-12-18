@@ -99,13 +99,13 @@ function DataExplorerWidget() {
                 </P>
                 <SegmentedControl
                   onValueChange={d =>
-                    updateDisaggregationType(d as 'sex' | 'age')
+                    updateDisaggregationType(d as 'gender' | 'age')
                   }
                   value={disaggregationType}
                   options={[
                     {
                       label: 'Gender',
-                      value: 'sex',
+                      value: 'gender',
                     },
                     {
                       label: 'Age',
@@ -250,10 +250,12 @@ function DataExplorerWidget() {
                     footNote=''
                     mapNoDataColor='var(--gray-200)'
                     graphTitle={
-                      <div className='flex gap-4'>
-                        <P marginBottom='none'>{indicator.label}</P>
+                      <div className='flex gap-4 items-center'>
+                        <P size='base' marginBottom='none'>
+                          {indicator.label}
+                        </P>
                         <P
-                          size='sm'
+                          size='xs'
                           marginBottom='none'
                           className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
                         >
@@ -349,6 +351,20 @@ function DataExplorerWidget() {
                       ],
                     )}
                     orientation='horizontal'
+                    graphTitle={
+                      <div className='flex gap-4 items-center'>
+                        <P size='base' marginBottom='none'>
+                          {indicator.label}
+                        </P>
+                        <P
+                          size='xs'
+                          marginBottom='none'
+                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
+                        >
+                          {courtType.label}
+                        </P>
+                      </div>
+                    }
                     height={
                       data.latestData.filter(
                         d =>
@@ -405,6 +421,20 @@ function DataExplorerWidget() {
                     colors={['#296DDF']}
                     showDots
                     highlightedLines={countries}
+                    graphTitle={
+                      <div className='flex gap-4 items-center'>
+                        <P size='base' marginBottom='none'>
+                          {indicator.label} over time
+                        </P>
+                        <P
+                          size='xs'
+                          marginBottom='none'
+                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
+                        >
+                          {courtType.label}
+                        </P>
+                      </div>
+                    }
                   />
                 )}
                 {tab === 'disaggregations' && (
@@ -427,7 +457,7 @@ function DataExplorerWidget() {
                         {
                           chartConfigId: 'x',
                           columnId:
-                            disaggregationType === 'sex'
+                            disaggregationType === 'gender'
                               ? ['malePercentage', 'femalePercentage']
                               : [
                                   'age_under_35Percentage',
@@ -441,6 +471,21 @@ function DataExplorerWidget() {
                     )}
                     leftMargin={100}
                     truncateBy={20}
+                    graphTitle={
+                      <div className='flex gap-4 items-center'>
+                        <P size='base' marginBottom='none'>
+                          Disaggregated proportion of judges by{' '}
+                          {disaggregationType}
+                        </P>
+                        <P
+                          size='xs'
+                          marginBottom='none'
+                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
+                        >
+                          {courtType.label}
+                        </P>
+                      </div>
+                    }
                     height={
                       data.latestData.filter(
                         d =>
@@ -460,7 +505,7 @@ function DataExplorerWidget() {
                       amount: 0.1,
                     }}
                     colorDomain={
-                      disaggregationType === 'sex'
+                      disaggregationType === 'gender'
                         ? ['Male', 'Female']
                         : [
                             'Age under 35',
