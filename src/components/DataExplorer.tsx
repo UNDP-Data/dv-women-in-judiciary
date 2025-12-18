@@ -32,7 +32,7 @@ import {
   useRegion,
   useTab,
 } from '@/stores/dataExplorerStore';
-import { INDICATORS_OPTIONS } from '@/constants';
+import { DISAGGREGATION_CONFIG, INDICATORS_OPTIONS } from '@/constants';
 
 function useData() {
   return useQuery({
@@ -64,6 +64,14 @@ function DataExplorerWidget() {
     );
   if (isError) return <div>Error</div>;
   if (!data) return <div>No data</div>;
+
+  const ColorDot = ({ color }: { color: string }) => (
+    <span
+      className='inline-block w-2.5 h-2.5 rounded-full'
+      style={{ backgroundColor: color }}
+    />
+  );
+
   return (
     <>
       <VisualizationWidget>
@@ -319,7 +327,7 @@ function DataExplorerWidget() {
                               maxValue={100}
                               noOfXTicks={2}
                               noOfYTicks={2}
-                              lineColor='#296DDF'
+                              lineColor='var(--gray-600)'
                             />
                           </div>
                         </div>
@@ -376,6 +384,60 @@ function DataExplorerWidget() {
                       ).length * 40
                     }
                     leftMargin={100}
+                    styles={{ tooltip: { padding: 0 } }}
+                    tooltip={d => {
+                      return (
+                        <div className='w-[280px] bg-primary-white'>
+                          <div className='font-bold p-2 bg-primary-gray-300 uppercase text-xs'>
+                            {d.data.GeoAreaName}
+                          </div>
+                          <Spacer size='base' />
+                          <div className='flex gap-4 justify-between p-2'>
+                            <P marginBottom='none' size='sm'>
+                              {indicator.label} - {courtType.label} (
+                              {d.data.TimePeriod})
+                            </P>
+                            <P
+                              marginBottom='none'
+                              size='sm'
+                              className='font-bold'
+                            >
+                              {numberFormattingFunction(
+                                d.data[indicator.value],
+                              )}
+                            </P>
+                          </div>
+                          <div className='p-2'>
+                            <SimpleLineChart
+                              height={150}
+                              backgroundColor={false}
+                              data={transformDataForGraph(
+                                data.completeData.filter(
+                                  el =>
+                                    el.court === courtType.value &&
+                                    el.GeoAreaName === d.data.GeoAreaName,
+                                ),
+                                'lineChart',
+                                [
+                                  {
+                                    chartConfigId: 'date',
+                                    columnId: 'TimePeriod',
+                                  },
+                                  {
+                                    chartConfigId: 'y',
+                                    columnId: indicator.value,
+                                  },
+                                ],
+                              )}
+                              maxValue={100}
+                              noOfXTicks={2}
+                              noOfYTicks={2}
+                              lineColor='var(--gray-600)'
+                            />
+                          </div>
+                        </div>
+                      );
+                    }}
                     bottomMargin={0}
                     truncateBy={20}
                     sortData='desc'
@@ -470,7 +532,62 @@ function DataExplorerWidget() {
                       ],
                     )}
                     leftMargin={100}
+                    maxBarThickness={40}
                     truncateBy={20}
+                    styles={{ tooltip: { padding: 0 } }}
+                    tooltip={d => {
+                      const { labels, colors, showNA } =
+                        DISAGGREGATION_CONFIG[
+                          disaggregationType as 'gender' | 'age'
+                        ];
+
+                      return (
+                        <div className='w-[280px] bg-primary-white'>
+                          <div className='font-bold p-2 bg-primary-gray-300 uppercase text-xs'>
+                            {d.data.GeoAreaName}
+                          </div>
+
+                          <Spacer size='base' />
+
+                          <P marginBottom='none' size='sm' className='p-2'>
+                            Disaggregated proportion of judges by{' '}
+                            {disaggregationType} ({d.data.TimePeriod})
+                          </P>
+
+                          {labels.map((label, index: number) => {
+                            const value = d.x?.[index];
+
+                            if (!showNA && value == null) return null;
+
+                            return (
+                              <div
+                                key={label}
+                                className='flex items-center gap-4 justify-between p-2'
+                              >
+                                <div className='flex items-center gap-2'>
+                                  <ColorDot color={colors[index]} />
+                                  <P marginBottom='none' size='sm'>
+                                    {label}
+                                  </P>
+                                </div>
+
+                                <P
+                                  marginBottom='none'
+                                  size='sm'
+                                  className='font-bold'
+                                >
+                                  {value != null
+                                    ? numberFormattingFunction(value)
+                                    : 'NA'}
+                                </P>
+                              </div>
+                            );
+                          })}
+
+                          <div className='p-2' />
+                        </div>
+                      );
+                    }}
                     graphTitle={
                       <div className='flex gap-4 items-center'>
                         <P size='base' marginBottom='none'>
@@ -515,7 +632,13 @@ function DataExplorerWidget() {
                             'Age 65+',
                           ]
                     }
-                    colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445']}
+                    colors={[
+                      '#296DDF',
+                      '#04BAAB',
+                      '#934DB0',
+                      '#F96445',
+                      '#c4c4c4',
+                    ]}
                     connectorStrokeWidth={1}
                     orientation='horizontal'
                     showValues={false}

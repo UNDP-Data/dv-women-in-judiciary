@@ -35,3 +35,11 @@ export interface FormattedDataType extends DataType {
   group_bPercentage?: number;
   group_cPercentage?: number;
 }
+
+export type DisaggregationType = 'gender' | 'age';
+
+export type DisaggregationConfig = {
+  labels: string[];
+  colors: string[];
+  showNA: boolean;
+};
