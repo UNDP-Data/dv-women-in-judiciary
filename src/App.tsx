@@ -85,7 +85,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='relative bg-primary-white h-[700px] flex items-center px-4 sm:px-[288px] mx-auto max-w-[1980px]'>
+      <div className='relative h-fit sm:h-[700px] bg-primary-white flex items-center px-4 sm:px-[288px] pb-60 sm:pb-20 pt-20 mx-auto max-w-[1980px]'>
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
              bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
@@ -94,7 +94,7 @@ function App() {
           }}
         />
         <img
-          className='absolute top-10 left-0'
+          className='absolute top-10 left-0 hidden sm:block'
           alt='abstract shapes'
           src='/imgs/shape-01.svg'
         />
@@ -108,7 +108,7 @@ function App() {
             Women remain underrepresented in top decision-making positions in
             the judiciary
           </H2>
-          <P marginBottom='none' className='leading-[1.5]  text-[24px]!'>
+          <P size='base-responsive' marginBottom='none'>
             Globally, women remain underrepresented across the public service
             and the judiciary, with representation ratios at 0.80 and 0.90,
             respectively – both falling short of achieving parity. This gap is
