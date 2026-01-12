@@ -1,20 +1,12 @@
 import { Button } from '@undp/design-system-react/Button';
 import { H4, P } from '@undp/design-system-react/Typography';
-import { Download } from 'lucide-react';
+import { ChevronRightIcon } from 'lucide-react';
 
 export default function DataDownloadCard() {
   return (
-    <div
-      className='
-  relative flex flex-col justify-between gap-8 w-full box-border
-  pt-8 px-6 pb-[220px]
-  sm:px-8 sm:py-16
-  bg-[var(--gray-200)]
-'
-    >
+    <div className='relative flex flex-col justify-between gap-8 box-border pt-8 px-6 pb-[220px] sm:px-8 sm:py-16 bg-[var(--gray-200)] min-w-[240px] basis-[calc(50%-12px)] grow'>
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.7] z-10
-             bg-[url('imgs/texture.png')] bg-repeat mix-blend-overlay"
+        className='absolute inset-0 pointer-events-none opacity-[0.7] z-10 bg-[url("imgs/texture.png")] bg-repeat mix-blend-overlay'
         style={{
           backgroundSize: '128px 128px',
         }}
@@ -22,21 +14,21 @@ export default function DataDownloadCard() {
       <img
         className='absolute bottom-0 right-0'
         alt='abstract shapes'
-        src='/imgs/shape-03.svg'
+        src='/imgs/downloadCardPattern.svg'
       />
       <div>
-        <H4 marginBottom='xs'>Download data</H4>
-        <P marginBottom='none'>
+        <H4 marginBottom='xs'>Download dataset</H4>
+        <P marginBottom='none' size='xl' className='pr-4'>
           Access the full dataset including all countries, indicators, and
-          historical data.
+          sources.
         </P>
       </div>
       <Button
         variant='link-without-icon'
         className='cursor-pointer w-fit p-0 m-0'
       >
-        <Download stroke='red' />
-        Download data
+        Download
+        <ChevronRightIcon color='#D12800' strokeWidth={2} />
       </Button>
     </div>
   );

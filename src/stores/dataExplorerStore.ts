@@ -7,6 +7,7 @@ type Actions = {
   updateRegion: (d?: string) => void;
   updateDisaggregationType: (d: 'gender' | 'age') => void;
   updateCountries: (d?: string[]) => void;
+  updateCountriesForTrendLines: (d?: string[]) => void;
 };
 
 type Store = {
@@ -16,6 +17,7 @@ type Store = {
   courtType: { value: string; label: string };
   region?: string;
   countries?: string[];
+  countriesForTrendLines?: string[];
   actions: Actions;
 };
 
@@ -30,6 +32,7 @@ export const useDataExplorerStore = create<Store>(set => ({
     label: 'All courts',
     value: 'total',
   },
+  countriesForTrendLines: ['France', 'Italy', 'Spain', 'Canada'],
   region: undefined,
   countries: [],
   actions: {
@@ -39,6 +42,8 @@ export const useDataExplorerStore = create<Store>(set => ({
     updateCourtType: d => set({ courtType: d }),
     updateRegion: (d?: string) => set({ region: d }),
     updateCountries: (d?: string[]) => set({ countries: d }),
+    updateCountriesForTrendLines: (d?: string[]) =>
+      set({ countriesForTrendLines: d }),
   },
 }));
 
@@ -49,6 +54,8 @@ export const useDisaggregationType = () =>
 export const useCourtType = () => useDataExplorerStore(s => s.courtType);
 export const useRegion = () => useDataExplorerStore(s => s.region);
 export const useCountries = () => useDataExplorerStore(s => s.countries);
+export const useCountriesForTrendLines = () =>
+  useDataExplorerStore(s => s.countriesForTrendLines);
 
 export const useDataExplorerActions = () =>
   useDataExplorerStore(s => s.actions);

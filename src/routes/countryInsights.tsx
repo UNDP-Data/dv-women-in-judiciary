@@ -17,6 +17,7 @@ import {
   useCountryInsightsActions,
   useCountryInsightsStore,
 } from '@/stores/countryInsightsStore';
+import CountryProfileCard from '@/components/CountryProfileCard';
 
 function useData() {
   return useQuery({
@@ -255,28 +256,47 @@ export function CountryInsights() {
           <MultiLineAltChart
             graphTitle='Female representation by court over time'
             backgroundColor={false}
-            data={transformDataForGraph(countryData, 'multiLineAltChart', [
-              {
-                chartConfigId: 'label',
-                columnId: 'court',
-              },
-              {
-                chartConfigId: 'color',
-                columnId: 'court',
-              },
-              {
-                chartConfigId: 'y',
-                columnId: 'femalePercentage',
-              },
-              {
-                chartConfigId: 'date',
-                columnId: 'TimePeriod',
-              },
-            ])}
+            data={transformDataForGraph(
+              countryData.map(d => ({
+                ...d,
+                court:
+                  d.court === 'total'
+                    ? 'All courts'
+                    : d.court === 'high'
+                      ? 'Higher courts'
+                      : d.court === 'low'
+                        ? 'Lower courts'
+                        : 'Supreme courts',
+              })),
+              'multiLineAltChart',
+              [
+                {
+                  chartConfigId: 'label',
+                  columnId: 'court',
+                },
+                {
+                  chartConfigId: 'color',
+                  columnId: 'court',
+                },
+                {
+                  chartConfigId: 'y',
+                  columnId: 'femalePercentage',
+                },
+                {
+                  chartConfigId: 'date',
+                  columnId: 'TimePeriod',
+                },
+              ],
+            )}
             refValues={[{ value: 50, text: 'Gender parity' }]}
             showColorScale
             colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445']}
-            colorDomain={['total', 'supreme', 'high', 'low']}
+            colorDomain={[
+              'All courts',
+              'Supreme courts',
+              'Higher courts',
+              'Lower courts',
+            ]}
             noOfYTicks={3}
             showDots
             rightMargin={125}
@@ -370,7 +390,10 @@ export function CountryInsights() {
         </div>
       </div>
       <Spacer size='4xl' />
-      <DataDownloadCard />
+      <div className='flex gap-6 flex-wrap'>
+        <DataDownloadCard />
+        <CountryProfileCard country={country} url='www.google.com' />
+      </div>
       <Spacer size='7xl' />
     </div>
   );

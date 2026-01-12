@@ -18,26 +18,25 @@ interface Shape {
   fill: FillType;
 }
 
-const AnimatedShapeGrid: React.FC = () => {
-  const shapeTypes: ShapeType[] = [
-    'circleInset',
-    'quarterCircle1',
-    'quarterCircle2',
-    'quarterCircle3',
-    'quarterCircle4',
-    'halfCircle1',
-  ];
+const SHAPE_TYPES: ShapeType[] = [
+  'circleInset',
+  'quarterCircle1',
+  'quarterCircle2',
+  'quarterCircle3',
+  'quarterCircle4',
+  'halfCircle1',
+];
 
-  const colors = [
-    '#F7F7F7',
-    '#F7F7F7',
-    '#F7F7F7',
-    '#04BAAB',
-    '#296DDF',
-    '#F96445',
-    '#934DB0',
-  ];
-
+const COLORS = [
+  '#F7F7F7',
+  '#F7F7F7',
+  '#F7F7F7',
+  '#04BAAB',
+  '#296DDF',
+  '#F96445',
+  '#934DB0',
+];
+const AnimatedShapeGrid = () => {
   const COLS = window.innerWidth > 1024 ? 8 : 4;
   const ROWS = window.innerWidth > 1024 ? 6 : 3;
   const CELL_COUNT = COLS * ROWS;
@@ -49,8 +48,8 @@ const AnimatedShapeGrid: React.FC = () => {
       .fill(null)
       .map((_, i) => ({
         id: i,
-        type: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-        color: colors[Math.floor(Math.random() * colors.length)],
+        type: SHAPE_TYPES[Math.floor(Math.random() * SHAPE_TYPES.length)],
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
         fill: randomFill(),
       })),
   );
@@ -59,8 +58,8 @@ const AnimatedShapeGrid: React.FC = () => {
       setShapes(prev =>
         prev.map(shape => ({
           ...shape,
-          type: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-          color: colors[Math.floor(Math.random() * colors.length)],
+          type: SHAPE_TYPES[Math.floor(Math.random() * SHAPE_TYPES.length)],
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
           fill: randomFill(),
         })),
       );
@@ -111,28 +110,17 @@ const AnimatedShapeGrid: React.FC = () => {
                   height: '45%',
                   background:
                     shape.fill === 'gradient'
-                      ? `linear-gradient(
-              135deg,
-              ${shape.color} 0%,
-              ${shape.color}00 100%
-            )`
+                      ? `linear-gradient(135deg, ${shape.color} 0%, ${shape.color}00 100%)`
                       : shape.color,
                 }}
               />
             ) : (
               <div
-                className={`
-      absolute inset-0
-      ${getShapeClasses(shape.type)}
-    `}
+                className={`absolute inset-0 ${getShapeClasses(shape.type)}`}
                 style={{
                   background:
                     shape.fill === 'gradient'
-                      ? `linear-gradient(
-              135deg,
-              ${shape.color} 0%,
-              ${shape.color}00 100%
-            )`
+                      ? `linear-gradient(135deg, ${shape.color} 0%, ${shape.color}00 100%)`
                       : shape.color,
                 }}
               />

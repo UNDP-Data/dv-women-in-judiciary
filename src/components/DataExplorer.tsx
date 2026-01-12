@@ -25,6 +25,7 @@ import { numberFormattingFunction } from '@undp/data-viz/utils';
 import { getData } from '@/QueryFn/getData';
 import {
   useCountries,
+  useCountriesForTrendLines,
   useCourtType,
   useDataExplorerActions,
   useDisaggregationType,
@@ -55,7 +56,9 @@ function DataExplorerWidget() {
     updateCountries,
     updateIndicator,
     updateDisaggregationType,
+    updateCountriesForTrendLines,
   } = useDataExplorerActions();
+  const countriesForTrendLines = useCountriesForTrendLines();
   if (isLoading)
     return (
       <div>
@@ -100,7 +103,7 @@ function DataExplorerWidget() {
           </VisualizationWidgetHeaderItem>
         </VisualizationWidgetHeader>
         <VisualizationWidgetBody>
-          <VisualizationWidgetBodySidebar className='w-full border-0 sm:border-r sm:border-primary-gray-300 sm:max-w-[320px] flex content-between'>
+          <VisualizationWidgetBodySidebar className='w-full border-0 sm:border-r sm:border-primary-gray-300 sm:max-w-[320px] flex content-between h-none md:h-[80vh]'>
             <div className='w-full'>
               <Activity mode={tab === 'disaggregations' ? 'visible' : 'hidden'}>
                 <P size='xs' marginBottom='2xs'>
@@ -167,25 +170,29 @@ function DataExplorerWidget() {
                 size='sm'
                 variant='light'
               />
-              <Spacer size='xl' />
-              <P size='xs' marginBottom='2xs'>
-                Filter by region
-              </P>
-              <DropdownSelect
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onChange={(d: any) => updateRegion(d?.value)}
-                value={region ? { value: region, label: region } : undefined}
-                options={[...new Set(data.latestData.map(d => d.Region))].map(
-                  d => ({
-                    label: d,
-                    value: d,
-                  }),
-                )}
-                size='sm'
-                variant='light'
-                isClearable
-              />
-              <Activity mode={tab === 'map' ? 'hidden' : 'visible'}>
+              <Activity mode={tab === 'trends' ? 'hidden' : 'visible'}>
+                <Spacer size='xl' />
+                <P size='xs' marginBottom='2xs'>
+                  Filter by region
+                </P>
+                <DropdownSelect
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(d: any) => updateRegion(d?.value)}
+                  value={region ? { value: region, label: region } : undefined}
+                  options={[...new Set(data.latestData.map(d => d.Region))].map(
+                    d => ({
+                      label: d,
+                      value: d,
+                    }),
+                  )}
+                  size='sm'
+                  variant='light'
+                  isClearable
+                />
+              </Activity>
+              <Activity
+                mode={tab === 'map' || tab === 'trends' ? 'hidden' : 'visible'}
+              >
                 <Spacer size='xl' />
                 <P size='xs' marginBottom='2xs'>
                   Highlight country(ies)
@@ -206,6 +213,8 @@ function DataExplorerWidget() {
                   size='sm'
                   variant='light'
                   isClearable
+                  isMulti
+                  isSearchable
                 />
               </Activity>
             </div>
@@ -220,7 +229,7 @@ function DataExplorerWidget() {
             ) : null}
           </VisualizationWidgetBodySidebar>
           <VisualizationWidgetBodyContent>
-            <div className='h-[706px] w-full bg-white'>
+            <div className='h-full w-full bg-white'>
               <div className='h-full p-4'>
                 {tab === 'map' && (
                   <ChoroplethMap
@@ -255,7 +264,7 @@ function DataExplorerWidget() {
                     }
                     mapNoDataColor='var(--gray-200)'
                     graphTitle={
-                      <div className='flex gap-4 items-center'>
+                      <div className='flex gap-2 items-center'>
                         <P size='base' marginBottom='none'>
                           {indicator.label}
                         </P>
@@ -357,7 +366,7 @@ function DataExplorerWidget() {
                     )}
                     orientation='horizontal'
                     graphTitle={
-                      <div className='flex gap-4 items-center'>
+                      <div className='flex gap-2 items-center'>
                         <P size='base' marginBottom='none'>
                           {indicator.label}
                         </P>
@@ -449,53 +458,84 @@ function DataExplorerWidget() {
                   />
                 )}
                 {tab === 'trends' && (
-                  <MultiLineAltChart
-                    data={transformDataForGraph(
-                      data.completeData.filter(
-                        d =>
-                          d.court === courtType.value &&
-                          d.TimePeriod >= 2015 &&
-                          (region ? d.Region === region : true) &&
-                          ((countries || []).length > 0
-                            ? (countries || []).includes(d.GeoAreaName)
-                            : true),
-                      ),
-                      'multiLineAltChart',
-                      [
-                        {
-                          chartConfigId: 'label',
-                          columnId: 'GeoAreaName',
-                        },
-                        {
-                          chartConfigId: 'y',
-                          columnId: indicator.value,
-                        },
-                        {
-                          chartConfigId: 'date',
-                          columnId: 'TimePeriod',
-                        },
-                      ],
-                    )}
-                    animate
-                    backgroundColor={false}
-                    colors={['#296DDF']}
-                    showDots
-                    highlightedLines={countries}
-                    graphTitle={
-                      <div className='flex gap-4 items-center'>
-                        <P size='base' marginBottom='none'>
-                          {indicator.label} over time
-                        </P>
-                        <P
-                          size='xs'
-                          marginBottom='none'
-                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
-                        >
-                          {courtType.label}
-                        </P>
-                      </div>
-                    }
-                  />
+                  <div className='flex flex-col gap-4 h-full'>
+                    <div className='flex gap-2 items-center'>
+                      <P size='base' marginBottom='none'>
+                        {indicator.label} over time
+                      </P>
+                      <P
+                        size='xs'
+                        marginBottom='none'
+                        className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
+                      >
+                        {courtType.label}
+                      </P>
+                    </div>
+                    <div>
+                      <P size='xs' marginBottom='2xs'>
+                        Select country(ies)
+                      </P>
+                      <DropdownSelect
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onChange={(d: any) =>
+                          updateCountriesForTrendLines(
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            d.map((el: any) => el.value),
+                          )
+                        }
+                        value={countriesForTrendLines?.map(d => ({
+                          value: d,
+                          label: d,
+                        }))}
+                        options={[
+                          ...new Set(data.latestData.map(d => d.GeoAreaName)),
+                        ].map(d => ({
+                          label: d,
+                          value: d,
+                        }))}
+                        size='sm'
+                        variant='light'
+                        isClearable
+                        isMulti
+                        isSearchable
+                      />
+                    </div>
+                    <MultiLineAltChart
+                      data={transformDataForGraph(
+                        data.completeData.filter(
+                          d =>
+                            d.court === courtType.value &&
+                            d.TimePeriod >= 2015 &&
+                            (region ? d.Region === region : true) &&
+                            ((countriesForTrendLines || []).length > 0
+                              ? (countriesForTrendLines || []).includes(
+                                  d.GeoAreaName,
+                                )
+                              : true),
+                        ),
+                        'multiLineAltChart',
+                        [
+                          {
+                            chartConfigId: 'label',
+                            columnId: 'GeoAreaName',
+                          },
+                          {
+                            chartConfigId: 'y',
+                            columnId: indicator.value,
+                          },
+                          {
+                            chartConfigId: 'date',
+                            columnId: 'TimePeriod',
+                          },
+                        ],
+                      )}
+                      animate
+                      backgroundColor={false}
+                      colors={['#296DDF']}
+                      showDots
+                      highlightedLines={countries}
+                    />
+                  </div>
                 )}
                 {tab === 'disaggregations' && (
                   <DumbbellChart
@@ -587,7 +627,7 @@ function DataExplorerWidget() {
                       );
                     }}
                     graphTitle={
-                      <div className='flex gap-4 items-center'>
+                      <div className='flex gap-2 items-center'>
                         <P size='base' marginBottom='none'>
                           Disaggregated proportion of judges by{' '}
                           {disaggregationType}
