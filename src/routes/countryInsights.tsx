@@ -68,12 +68,12 @@ export function CountryInsights() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange={(d: any) => updateCountry(d.value)}
         value={{ label: country, value: country }}
-        options={[...new Set(data.completeData.map(d => d.GeoAreaName))].map(
-          d => ({
+        options={[...new Set(data.completeData.map(d => d.GeoAreaName))]
+          .sort((a, b) => a.localeCompare(b))
+          .map(d => ({
             label: d,
             value: d,
-          }),
-        )}
+          }))}
         size='sm'
         variant='light'
         isSearchable
