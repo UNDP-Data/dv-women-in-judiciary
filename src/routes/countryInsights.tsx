@@ -104,7 +104,7 @@ export function CountryInsights() {
         <div className='bg-[#F96445] grow shrink-0 w-[calc(33.33%-0.5rem)] min-h-[320px] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <div className='flex gap-2 items-center'>
             <P className='text-[var(--white)]' marginBottom='none' size='xl'>
-              Women representation
+              Share of women judges (% of total judges)
             </P>
             <div>
               {latestDataAllCourt?.TimePeriod && (
@@ -146,7 +146,7 @@ export function CountryInsights() {
         </div>
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle='Women representation over time'
+            graphTitle='Share of women judges (% of total judges) over time'
             backgroundColor={false}
             data={transformDataForGraph(
               countryData.filter(d => d.court === 'total'),
@@ -281,7 +281,7 @@ export function CountryInsights() {
         </div>
         <div className='grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
-            graphTitle='Women representation by court'
+            graphTitle='Share of women judges (% of total judges) by court'
             backgroundColor={false}
             orientation='horizontal'
             data={
@@ -328,7 +328,7 @@ export function CountryInsights() {
         </div>
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] min-h-[320px] bg-[var(--gray-100)] p-4'>
           <MultiLineAltChart
-            graphTitle='Women representation by court over time'
+            graphTitle='Share of women judges (% of total judges) by court over time'
             backgroundColor={false}
             data={transformDataForGraph(
               countryData.map(d => ({
