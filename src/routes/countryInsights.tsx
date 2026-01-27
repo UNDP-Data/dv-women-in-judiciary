@@ -103,7 +103,8 @@ export function CountryInsights() {
               '%',
             )}
           </H2>
-          {latestDataAllCourt?.femalePercentage && (
+          {latestDataAllCourt?.femalePercentage !== undefined &&
+          latestDataAllCourt?.femalePercentage !== null ? (
             <UnitChart
               backgroundColor={false}
               data={[
@@ -120,7 +121,7 @@ export function CountryInsights() {
               showColorScale={false}
               showStrokeForWhiteDots={false}
             />
-          )}
+          ) : null}
         </div>
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
