@@ -14,7 +14,7 @@ export const INDICATORS_OPTIONS = [
       },
       {
         label:
-          'Proportion of women judges with respect to the female population',
+          'Proportion of women judges with respect to the women population',
         value: 'SDG1671C_Female',
       },
     ],
