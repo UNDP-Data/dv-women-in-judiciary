@@ -71,8 +71,7 @@ function App() {
               marginBottom='none'
               className='text-primary-gray-700 leading-[1.4] w-[100%] sm:w-[80%]'
             >
-              Explore comprehensive data on gender representation in judicial
-              positions worldwide.
+              Explore data on women's representation in the judiciary
             </H5>
             <Spacer size='4xl' />
             <div className='rounded-full bg-[var(--gray-700)] p-2 w-fit'>
