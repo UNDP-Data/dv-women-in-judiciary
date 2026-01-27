@@ -5,11 +5,11 @@ export const INDICATORS_OPTIONS = [
     label: 'Sex representation',
     options: [
       {
-        label: 'Women representation in judicial positions (%)',
+        label: 'Share of women judges (% of total judges)',
         value: 'femalePercentage',
       },
       {
-        label: 'Men representation in judicial positions (%)',
+        label: 'Share of men judges (% of total judges)',
         value: 'malePercentage',
       },
       {
