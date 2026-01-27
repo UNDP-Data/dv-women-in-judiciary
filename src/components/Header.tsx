@@ -12,7 +12,7 @@ export default function HeaderEl() {
       <HeaderLogoUnit
         hyperlink='./'
         siteName='Women in Judiciary'
-        siteSubName='Policy Centre for Governance'
+        siteSubName='Global Policy Centre for Governance'
       />
       <HeaderMainNavUnit>
         <HeaderMenuUnit className='md:justify-end'>

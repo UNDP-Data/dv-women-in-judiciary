@@ -91,7 +91,7 @@ function DataExplorerWidget() {
           </VisualizationWidgetHeaderItem>
           <VisualizationWidgetHeaderItem value='ranks'>
             <ChartBarBig />
-            Ranks
+            Relative Position
           </VisualizationWidgetHeaderItem>
           <VisualizationWidgetHeaderItem value='trends'>
             <ChartLine />
@@ -305,6 +305,10 @@ function DataExplorerWidget() {
                             >
                               {numberFormattingFunction(
                                 d.data[indicator.value],
+                                'NA',
+                                1,
+                                undefined,
+                                '%',
                               )}
                             </P>
                           </div>
@@ -390,6 +394,8 @@ function DataExplorerWidget() {
                       ).length * 40
                     }
                     leftMargin={100}
+                    suffix='%'
+                    maxValue={100}
                     styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
                       return (
@@ -410,6 +416,10 @@ function DataExplorerWidget() {
                             >
                               {numberFormattingFunction(
                                 d.data[indicator.value],
+                                'NA',
+                                1,
+                                undefined,
+                                '%',
                               )}
                             </P>
                           </div>
@@ -530,6 +540,7 @@ function DataExplorerWidget() {
                         ],
                       )}
                       animate
+                      suffix='%'
                       backgroundColor={false}
                       colors={['#296DDF']}
                       showDots
@@ -572,6 +583,7 @@ function DataExplorerWidget() {
                     leftMargin={100}
                     maxBarThickness={40}
                     truncateBy={20}
+                    suffix='%'
                     styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
                       const { labels, colors, showNA } =
@@ -614,9 +626,13 @@ function DataExplorerWidget() {
                                   size='sm'
                                   className='font-bold'
                                 >
-                                  {value != null
-                                    ? numberFormattingFunction(value)
-                                    : 'NA'}
+                                  {numberFormattingFunction(
+                                    value,
+                                    'NA',
+                                    1,
+                                    undefined,
+                                    '%',
+                                  )}
                                 </P>
                               </div>
                             );
@@ -661,7 +677,7 @@ function DataExplorerWidget() {
                     }}
                     colorDomain={
                       disaggregationType === 'gender'
-                        ? ['Male', 'Female']
+                        ? ['Men', 'Women']
                         : [
                             'Age under 35',
                             'Age 35-44',
@@ -681,6 +697,7 @@ function DataExplorerWidget() {
                     orientation='horizontal'
                     showValues={false}
                     radius={5}
+                    maxValue={100}
                   />
                 )}
               </div>

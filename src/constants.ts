@@ -5,16 +5,16 @@ export const INDICATORS_OPTIONS = [
     label: 'Sex representation',
     options: [
       {
-        label: 'Female representation in judicial positions (%)',
+        label: 'Women representation in judicial positions (%)',
         value: 'femalePercentage',
       },
       {
-        label: 'Male representation in judicial positions (%)',
+        label: 'Men representation in judicial positions (%)',
         value: 'malePercentage',
       },
       {
         label:
-          'Proportion of female judges with respect to the female population',
+          'Proportion of women judges with respect to the female population',
         value: 'SDG1671C_Female',
       },
     ],
@@ -51,7 +51,7 @@ export const DISAGGREGATION_CONFIG: Record<
   DisaggregationConfig
 > = {
   gender: {
-    labels: ['Male', 'Female'],
+    labels: ['Men', 'Women'],
     colors: ['#296DDF', '#04BAAB'],
     showNA: false,
   },

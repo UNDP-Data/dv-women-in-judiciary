@@ -2,13 +2,7 @@ import { Button } from '@undp/design-system-react/Button';
 import { H4, P } from '@undp/design-system-react/Typography';
 import { ChevronRightIcon } from 'lucide-react';
 
-export default function CountryProfileCard({
-  country,
-  url,
-}: {
-  country: string;
-  url: string;
-}) {
+export default function CountryProfileCard() {
   return (
     <div className='relative flex flex-col justify-between gap-8 box-border pt-8 px-6 pb-[220px] sm:px-8 sm:py-16 min-w-[240px] basis-[calc(50%-12px)] grow bg-[var(--gray-200)]'>
       <div
@@ -25,11 +19,14 @@ export default function CountryProfileCard({
       <div>
         <H4 marginBottom='xs'>Learn More</H4>
         <P marginBottom='none' size='xl' className='pr-4'>
-          Explore work on women in the judiciary in {country} and related
-          initiatives.
+          Explore our work on Gender Justice and related initiatives
         </P>
       </div>
-      <a href={url} target='_blank' rel='noopener noreferrer'>
+      <a
+        href='https://www.undp.org/rolhr/justice/gender-justice'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
         <Button
           variant='link-without-icon'
           className='cursor-pointer w-fit p-0 m-0'

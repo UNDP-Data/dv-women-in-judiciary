@@ -6,16 +6,22 @@ import { H2, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
 import { UnitChart } from '@undp/data-viz/UnitChart';
-import { SimpleBarGraph, StackedBarGraph } from '@undp/data-viz/BarGraph';
+import {
+  GroupedBarGraph,
+  SimpleBarGraph,
+  StackedBarGraph,
+} from '@undp/data-viz/BarGraph';
 import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
 import { numberFormattingFunction } from '@undp/data-viz/utils';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
+import { TriangleAlert } from 'lucide-react';
 
 import DataDownloadCard from '@/components/DataDownloadCard';
 import { getData } from '@/QueryFn/getData';
 import {
+  useCountry,
   useCountryInsightsActions,
-  useCountryInsightsStore,
+  useCourtType,
 } from '@/stores/countryInsightsStore';
 import CountryProfileCard from '@/components/CountryProfileCard';
 
@@ -29,8 +35,9 @@ function useData() {
 export function CountryInsights() {
   const { data, isLoading, isError } = useData();
 
-  const { updateCountry } = useCountryInsightsActions();
-  const country = useCountryInsightsStore(s => s.country);
+  const { updateCountry, updateCourtType } = useCountryInsightsActions();
+  const country = useCountry();
+  const courtType = useCourtType();
 
   if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
 
@@ -76,7 +83,7 @@ export function CountryInsights() {
         <div className='bg-[#F96445] grow shrink-0 w-[calc(33.33%-0.5rem)] min-h-[320px] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <div className='flex gap-2 items-center'>
             <P className='text-[var(--white)]' marginBottom='none' size='xl'>
-              Female representation{' '}
+              Female representation
             </P>
             <div>
               {latestDataAllCourt?.TimePeriod && (
@@ -135,49 +142,93 @@ export function CountryInsights() {
             )}
             orientation='vertical'
             suffix='%'
-            leftMargin={100}
+            leftMargin={20}
             rightMargin={100}
             maxValue={100}
             noOfTicks={3}
-            showValues={false}
+            showValues
             barPadding={0.1}
             colors='#F96445'
             refValues={[{ value: 50, text: 'Gender parity' }]}
           />
         </div>
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] min-h-[320px] bg-[var(--gray-100)] p-4'>
-          <SimpleBarGraph
-            graphTitle='SDG indicator 16.7.1 over time'
-            backgroundColor={false}
-            data={transformDataForGraph(
-              countryData.filter(d => d.court === 'total'),
-              'barChart',
-              [
+          <div className='flex gap-2 justify-between items-center mb-5'>
+            <P marginBottom='none'>No. of judges over time</P>
+            <DropdownSelect
+              className='w-[240px]'
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onChange={(d: any) => updateCourtType(d)}
+              value={courtType}
+              options={[
                 {
-                  chartConfigId: 'label',
-                  columnId: 'TimePeriod',
+                  label: 'All courts',
+                  value: 'total',
                 },
                 {
-                  chartConfigId: 'size',
-                  columnId: 'SDG1671C_Female',
+                  label: 'Lower courts',
+                  value: 'low',
                 },
-              ],
-            )}
-            orientation='vertical'
-            maxValue={2}
-            noOfTicks={3}
-            showValues={false}
-            leftMargin={100}
-            rightMargin={100}
-            height={320}
-            colors='#296DDF'
-            refValues={[{ value: 1, text: 'Gender parity' }]}
-          />
+                {
+                  label: 'High courts',
+                  value: 'high',
+                },
+                {
+                  label: 'Supreme courts',
+                  value: 'supreme',
+                },
+              ]}
+              size='sm'
+              variant='light'
+            />
+          </div>
+          {countryData.filter(d => d.court === courtType.value).length > 0 ? (
+            <GroupedBarGraph
+              backgroundColor={false}
+              data={transformDataForGraph(
+                countryData.filter(d => d.court === courtType.value),
+                'groupedBarChart',
+                [
+                  {
+                    chartConfigId: 'label',
+                    columnId: 'TimePeriod',
+                  },
+                  {
+                    chartConfigId: 'size',
+                    columnId: ['male', 'female'],
+                  },
+                ],
+              )}
+              orientation='vertical'
+              showTicks={false}
+              leftMargin={20}
+              rightMargin={20}
+              showValues
+              height={320}
+              colorDomain={['Men', 'Women']}
+              colors={['#296DDF', '#04BAAB']}
+            />
+          ) : (
+            <div className='flex flex-col gap-4 items-center justify-center min-h-[240px]'>
+              <TriangleAlert
+                size={48}
+                className='stroke-primary-gray-500'
+                strokeWidth={1.5}
+              />
+              <P
+                className='text-primary-gray-550'
+                marginBottom='none'
+                size='lg'
+              >
+                No data available for this court type
+              </P>
+            </div>
+          )}
         </div>
         <div className='bg-[#296DDF] flex flex-col grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <div className='flex gap-2 items-center'>
             <P className='text-[var(--white)]' marginBottom='none' size='xl'>
-              SDG indicator 16.7.1{' '}
+              SDG indicator 16.7.1
             </P>
             <div>
               {latestDataAllCourt?.TimePeriod && (
@@ -192,9 +243,9 @@ export function CountryInsights() {
             marginBottom='none'
             className='text-primary-white opacity-[0.6]'
           >
-            Proportions of positions in national and local institutions,
-            including (a) the legislatures; (b) the public service; and (c) the
-            judiciary, compared to national distributions by sex
+            Representation of women in the judiciary is an SDG indicator. It
+            measures the proportion of women in the judiciary relative to the
+            share of women in the working age population
           </P>
           <div className='grow items-center flex'>
             <H2 className='text-[var(--white)]' marginBottom='base'>
@@ -242,6 +293,7 @@ export function CountryInsights() {
             height={320}
             colors='#04BAAB'
             showValues
+            suffix='%'
             showTicks={false}
             labelOrder={[
               'All courts',
@@ -290,6 +342,7 @@ export function CountryInsights() {
             )}
             refValues={[{ value: 50, text: 'Gender parity' }]}
             showColorScale
+            suffix='%'
             colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445']}
             colorDomain={[
               'All courts',
@@ -336,6 +389,7 @@ export function CountryInsights() {
             }
             maxValue={100}
             height={320}
+            suffix='%'
             colorDomain={[
               'Under 35',
               'Between 35-44',
@@ -350,6 +404,7 @@ export function CountryInsights() {
             graphTitle='Age distribution (All courts)'
             backgroundColor={false}
             orientation='horizontal'
+            suffix='%'
             data={
               ageDistributionData.length > 0
                 ? [
@@ -392,7 +447,7 @@ export function CountryInsights() {
       <Spacer size='4xl' />
       <div className='flex gap-6 flex-wrap'>
         <DataDownloadCard />
-        <CountryProfileCard country={country} url='www.google.com' />
+        <CountryProfileCard />
       </div>
       <Spacer size='7xl' />
     </div>

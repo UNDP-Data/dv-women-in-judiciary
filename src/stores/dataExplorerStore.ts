@@ -24,7 +24,7 @@ type Store = {
 export const useDataExplorerStore = create<Store>(set => ({
   tab: 'map',
   indicator: {
-    label: 'Female representation in judicial positions (%)',
+    label: 'Women representation in judicial positions (%)',
     value: 'femalePercentage',
   },
   disaggregationType: 'gender',
