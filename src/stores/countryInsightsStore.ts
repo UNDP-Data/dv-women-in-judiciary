@@ -6,13 +6,13 @@ type Actions = {
 };
 
 type Store = {
-  country: string;
+  country?: string;
   courtType: { value: string; label: string };
   actions: Actions;
 };
 
 export const useCountryInsightsStore = create<Store>(set => ({
-  country: 'Albania',
+  country: undefined,
   courtType: {
     label: 'All courts',
     value: 'total',

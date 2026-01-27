@@ -1,4 +1,4 @@
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, getRouteApi } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { AnyRootRoute } from '@tanstack/react-router';
 import { Spinner } from '@undp/design-system-react/Spinner';
@@ -15,6 +15,7 @@ import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
 import { numberFormattingFunction } from '@undp/data-viz/utils';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { TriangleAlert } from 'lucide-react';
+import { useEffect } from 'react';
 
 import DataDownloadCard from '@/components/DataDownloadCard';
 import { getData } from '@/QueryFn/getData';
@@ -34,8 +35,15 @@ function useData() {
 
 export function CountryInsights() {
   const { data, isLoading, isError } = useData();
+  const routeApi = getRouteApi('/country-insights');
+  const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
 
   const { updateCountry, updateCourtType } = useCountryInsightsActions();
+  useEffect(() => {
+    updateCountry(search.country || 'Albania');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.country]);
   const country = useCountry();
   const courtType = useCourtType();
 
@@ -66,7 +74,20 @@ export function CountryInsights() {
       <Spacer size='4xl' />
       <DropdownSelect
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onChange={(d: any) => updateCountry(d.value)}
+        onChange={(d: any) => {
+          navigate({
+            search: {
+              ...search,
+              country: d.value || undefined,
+            },
+            replace: true,
+          });
+          updateCourtType({
+            label: 'All courts',
+            value: 'total',
+          });
+          updateCountry(d.value);
+        }}
         value={{ label: country, value: country }}
         options={[...new Set(data.completeData.map(d => d.GeoAreaName))]
           .sort((a, b) => a.localeCompare(b))
@@ -454,10 +475,12 @@ export function CountryInsights() {
     </div>
   );
 }
+
 export default function createCountryInsightsRoute(parentRoute: AnyRootRoute) {
   return createRoute({
     path: '/country-insights',
     component: CountryInsights,
     getParentRoute: () => parentRoute,
+    validateSearch: (search: { country?: string }) => search,
   });
 }
