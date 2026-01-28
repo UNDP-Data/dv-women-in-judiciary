@@ -272,7 +272,7 @@ function App() {
       <div className='bg-primary-gray-200'>
         <div className='py-20 px-4 sm:px-24 mx-auto max-w-[1980px]'>
           <div className='flex flex-wrap'>
-            <div className='basis-1/2'>
+            <div className='basis-1/3'>
               <H6>In collaboration with</H6>
               <img
                 src='/imgs/logos/logo-01.webp'
@@ -280,7 +280,7 @@ function App() {
                 style={{ height: 115 }}
               />
             </div>
-            <div className='basis-1/2'>
+            <div className='basis-2/3'>
               <H6>With the support from</H6>
               <div className='flex flex-wrap gap-12'>
                 <img
@@ -291,6 +291,11 @@ function App() {
                 <img
                   src='/imgs/logos/logo-03.webp'
                   alt='kingdom of netherlands logo'
+                  style={{ height: 115 }}
+                />
+                <img
+                  src='/imgs/logos/logo-04.webp'
+                  alt='norway logo'
                   style={{ height: 115 }}
                 />
               </div>
