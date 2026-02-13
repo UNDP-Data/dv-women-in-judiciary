@@ -61,20 +61,52 @@ export default defineConfig({
           },
         },
         {
-          postcssPlugin: 'move-media-queries-last', // If you want to reorder media queries to the end
+          postcssPlugin: 'move-responsive-queries',
           OnceExit(root) {
-            const mediaQueries = [];
+            const mediaRules = [];
+            const containerRules = [];
 
-            // Collect all media queries
-            root.walkAtRules('media', mediaRule => {
-              mediaQueries.push(mediaRule.clone());
-              mediaRule.remove();
+            function extractMinWidth(params) {
+              let match = params.match(/min-width:\s*([\d.]+)(px|rem)/);
+              if (!match) {
+                match = params.match(/width\s*>=\s*([\d.]+)(px|rem)/);
+              }
+              if (!match) return null;
+
+              const value = parseFloat(match[1]);
+              const unit = match[2];
+              return unit === 'rem' ? value * 16 : value;
+            }
+
+            root.walkAtRules(rule => {
+              if (rule.name !== 'media' && rule.name !== 'container') return;
+
+              const pxValue = extractMinWidth(rule.params);
+              if (pxValue === null) return;
+
+              const entry = {
+                pxValue,
+                rule: rule.clone(),
+              };
+
+              if (rule.name === 'media') {
+                mediaRules.push(entry);
+              } else {
+                containerRules.push(entry);
+              }
+
+              rule.remove();
             });
 
-            // Append them at the end
-            mediaQueries.forEach(mediaQuery => {
-              root.append(mediaQuery);
-            });
+            // 1. Append media first
+            mediaRules
+              .sort((a, b) => a.pxValue - b.pxValue)
+              .forEach(({ rule }) => root.append(rule));
+
+            // 2. Append container after
+            containerRules
+              .sort((a, b) => a.pxValue - b.pxValue)
+              .forEach(({ rule }) => root.append(rule));
           },
         },
       ],

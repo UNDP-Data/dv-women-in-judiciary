@@ -11,7 +11,7 @@ import {
 import { ChartBarBig, ChartLine, Map, TextAlignStart } from 'lucide-react';
 import { Activity } from 'react';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
-import { P } from '@undp/design-system-react/Typography';
+import { H6, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
 import { ChoroplethMap } from '@undp/data-viz/ChoroplethMap';
@@ -102,131 +102,142 @@ function DataExplorerWidget() {
             Disaggregations
           </VisualizationWidgetHeaderItem>
         </VisualizationWidgetHeader>
-        <VisualizationWidgetBody>
-          <VisualizationWidgetBodySidebar className='w-full border-0 sm:border-r sm:border-primary-gray-300 sm:max-w-[320px] flex content-between h-none md:h-[80vh]'>
-            <div className='w-full'>
-              <Activity mode={tab === 'disaggregations' ? 'visible' : 'hidden'}>
+        <VisualizationWidgetBody className='h-none md:h-[80vh]'>
+          <VisualizationWidgetBodySidebar className='h-full'>
+            <div className='flex flex-col h-full'>
+              <div className='w-full grow'>
+                <H6>Settings & Filters</H6>
+                <Activity
+                  mode={tab === 'disaggregations' ? 'visible' : 'hidden'}
+                >
+                  <P size='xs' marginBottom='2xs'>
+                    Disaggregated proportion of judges by
+                  </P>
+                  <SegmentedControl
+                    onValueChange={d =>
+                      updateDisaggregationType(d as 'gender' | 'age')
+                    }
+                    value={disaggregationType}
+                    options={[
+                      {
+                        label: 'Gender',
+                        value: 'gender',
+                      },
+                      {
+                        label: 'Age',
+                        value: 'age',
+                      },
+                    ]}
+                    size='sm'
+                    variant='light'
+                  />
+                </Activity>
+                <Activity
+                  mode={tab === 'disaggregations' ? 'hidden' : 'visible'}
+                >
+                  <P size='xs' marginBottom='2xs'>
+                    Select indicator
+                  </P>
+                  <DropdownSelect
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    onChange={(d: any) => updateIndicator(d)}
+                    options={INDICATORS_OPTIONS}
+                    value={indicator}
+                    size='sm'
+                    variant='light'
+                  />
+                </Activity>
+                <Spacer size='xl' />
                 <P size='xs' marginBottom='2xs'>
-                  Disaggregated proportion of judges by
+                  Select court type
                 </P>
-                <SegmentedControl
-                  onValueChange={d =>
-                    updateDisaggregationType(d as 'gender' | 'age')
-                  }
-                  value={disaggregationType}
+                <DropdownSelect
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(d: any) => updateCourtType(d)}
+                  value={courtType}
                   options={[
                     {
-                      label: 'Gender',
-                      value: 'gender',
+                      label: 'All courts',
+                      value: 'total',
                     },
                     {
-                      label: 'Age',
-                      value: 'age',
+                      label: 'Lower courts',
+                      value: 'low',
+                    },
+                    {
+                      label: 'High courts',
+                      value: 'high',
+                    },
+                    {
+                      label: 'Supreme courts',
+                      value: 'supreme',
                     },
                   ]}
                   size='sm'
                   variant='light'
                 />
-              </Activity>
-              <Activity mode={tab === 'disaggregations' ? 'hidden' : 'visible'}>
-                <P size='xs' marginBottom='2xs'>
-                  Select indicator
-                </P>
-                <DropdownSelect
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(d: any) => updateIndicator(d)}
-                  options={INDICATORS_OPTIONS}
-                  value={indicator}
-                  size='sm'
-                  variant='light'
-                />
-              </Activity>
-              <Spacer size='xl' />
-              <P size='xs' marginBottom='2xs'>
-                Select court type
-              </P>
-              <DropdownSelect
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onChange={(d: any) => updateCourtType(d)}
-                value={courtType}
-                options={[
-                  {
-                    label: 'All courts',
-                    value: 'total',
-                  },
-                  {
-                    label: 'Lower courts',
-                    value: 'low',
-                  },
-                  {
-                    label: 'High courts',
-                    value: 'high',
-                  },
-                  {
-                    label: 'Supreme courts',
-                    value: 'supreme',
-                  },
-                ]}
-                size='sm'
-                variant='light'
-              />
-              <Activity mode={tab === 'trends' ? 'hidden' : 'visible'}>
-                <Spacer size='xl' />
-                <P size='xs' marginBottom='2xs'>
-                  Filter by region
-                </P>
-                <DropdownSelect
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(d: any) => updateRegion(d?.value)}
-                  value={region ? { value: region, label: region } : undefined}
-                  options={[...new Set(data.latestData.map(d => d.Region))].map(
-                    d => ({
+                <Activity mode={tab === 'trends' ? 'hidden' : 'visible'}>
+                  <Spacer size='xl' />
+                  <P size='xs' marginBottom='2xs'>
+                    Filter by region
+                  </P>
+                  <DropdownSelect
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    onChange={(d: any) => updateRegion(d?.value)}
+                    value={
+                      region ? { value: region, label: region } : undefined
+                    }
+                    options={[
+                      ...new Set(data.latestData.map(d => d.Region)),
+                    ].map(d => ({
                       label: d,
                       value: d,
-                    }),
-                  )}
-                  size='sm'
-                  variant='light'
-                  isClearable
-                />
-              </Activity>
-              <Activity
-                mode={tab === 'map' || tab === 'trends' ? 'hidden' : 'visible'}
-              >
-                <Spacer size='xl' />
-                <P size='xs' marginBottom='2xs'>
-                  Highlight country(ies)
-                </P>
-                <DropdownSelect
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange={(d: any) =>
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    updateCountries(d.map((el: any) => el.value))
+                    }))}
+                    size='sm'
+                    variant='light'
+                    isClearable
+                  />
+                </Activity>
+                <Activity
+                  mode={
+                    tab === 'map' || tab === 'trends' ? 'hidden' : 'visible'
                   }
-                  value={countries?.map(d => ({ value: d, label: d }))}
-                  options={[
-                    ...new Set(data.latestData.map(d => d.GeoAreaName)),
-                  ].map(d => ({
-                    label: d,
-                    value: d,
-                  }))}
-                  size='sm'
-                  variant='light'
-                  isClearable
-                  isMulti
-                  isSearchable
-                />
-              </Activity>
-            </div>
-            {tab === 'map' || tab === 'ranks' || tab === 'disaggregations' ? (
-              <div className='h-fit pr-10 text-primary-gray-600'>
-                <P size='xs' marginBottom='none'>
-                  The visualization shows the most recent data available for
-                  each country, so the years may differ between countries. Hover
-                  over a country to see its data details.
-                </P>
+                >
+                  <Spacer size='xl' />
+                  <P size='xs' marginBottom='2xs'>
+                    Highlight country(ies)
+                  </P>
+                  <DropdownSelect
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    onChange={(d: any) =>
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      updateCountries(d.map((el: any) => el.value))
+                    }
+                    value={countries?.map(d => ({ value: d, label: d }))}
+                    options={[
+                      ...new Set(data.latestData.map(d => d.GeoAreaName)),
+                    ].map(d => ({
+                      label: d,
+                      value: d,
+                    }))}
+                    size='sm'
+                    variant='light'
+                    isClearable
+                    isMulti
+                    isSearchable
+                  />
+                </Activity>
               </div>
-            ) : null}
+              {tab === 'map' || tab === 'ranks' || tab === 'disaggregations' ? (
+                <div className='h-fit pr-10 text-primary-gray-600'>
+                  <P size='xs' marginBottom='none'>
+                    The visualization shows the most recent data available for
+                    each country, so the years may differ between countries.
+                    Hover over a country to see its data details.
+                  </P>
+                </div>
+              ) : null}
+            </div>
           </VisualizationWidgetBodySidebar>
           <VisualizationWidgetBodyContent>
             <div className='h-full w-full bg-white'>
@@ -268,16 +279,13 @@ function DataExplorerWidget() {
                       <div className='flex gap-2 items-center'>
                         <P size='base' marginBottom='none'>
                           {indicator.label}
-                        </P>
-                        <P
-                          size='xs'
-                          marginBottom='none'
-                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
-                        >
-                          {courtType.label}
+                          <span className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'>
+                            {courtType.label}
+                          </span>
                         </P>
                       </div>
                     }
+                    graphDownload
                     backgroundColor={false}
                     highlightedIds={
                       region
@@ -374,13 +382,9 @@ function DataExplorerWidget() {
                       <div className='flex gap-2 items-center'>
                         <P size='base' marginBottom='none'>
                           {indicator.label}
-                        </P>
-                        <P
-                          size='xs'
-                          marginBottom='none'
-                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
-                        >
-                          {courtType.label}
+                          <span className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'>
+                            {courtType.label}
+                          </span>
                         </P>
                       </div>
                     }
@@ -455,6 +459,7 @@ function DataExplorerWidget() {
                         </div>
                       );
                     }}
+                    graphDownload
                     bottomMargin={0}
                     truncateBy={20}
                     sortData='desc'
@@ -464,7 +469,7 @@ function DataExplorerWidget() {
                     animate={{
                       duration: 0.5,
                       once: true,
-                      amount: 0.1,
+                      amount: 0,
                     }}
                   />
                 )}
@@ -473,13 +478,9 @@ function DataExplorerWidget() {
                     <div className='flex gap-2 items-center'>
                       <P size='base' marginBottom='none'>
                         {indicator.label} over time
-                      </P>
-                      <P
-                        size='xs'
-                        marginBottom='none'
-                        className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
-                      >
-                        {courtType.label}
+                        <span className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'>
+                          {courtType.label}
+                        </span>
                       </P>
                     </div>
                     <div>
@@ -512,6 +513,16 @@ function DataExplorerWidget() {
                       />
                     </div>
                     <MultiLineAltChart
+                      graphTitle={
+                        <div className='flex gap-2 items-center'>
+                          <P size='base' marginBottom='none'>
+                            Trend over time for {indicator.label}
+                          </P>
+                          <span className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'>
+                            {courtType.label}
+                          </span>
+                        </div>
+                      }
                       data={transformDataForGraph(
                         data.completeData.filter(
                           d =>
@@ -542,6 +553,7 @@ function DataExplorerWidget() {
                       )}
                       animate
                       suffix='%'
+                      graphDownload
                       backgroundColor={false}
                       colors={['#296DDF']}
                       showDots
@@ -551,6 +563,7 @@ function DataExplorerWidget() {
                 )}
                 {tab === 'disaggregations' && (
                   <DumbbellChart
+                    graphDownload
                     data={transformDataForGraph(
                       data.latestData.filter(
                         d =>
@@ -649,13 +662,9 @@ function DataExplorerWidget() {
                           Disaggregated proportion of judges by{' '}
                           {disaggregationType}
                         </P>
-                        <P
-                          size='xs'
-                          marginBottom='none'
-                          className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'
-                        >
+                        <span className='px-3 py-1 rounded-[4px] bg-primary-gray-200 text-primary-gray-600'>
                           {courtType.label}
-                        </P>
+                        </span>
                       </div>
                     }
                     height={
@@ -674,7 +683,7 @@ function DataExplorerWidget() {
                     animate={{
                       duration: 0.5,
                       once: true,
-                      amount: 0.1,
+                      amount: 0,
                     }}
                     colorDomain={
                       disaggregationType === 'gender'

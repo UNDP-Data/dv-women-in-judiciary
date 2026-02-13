@@ -147,6 +147,7 @@ export function CountryInsights() {
         <div className='grow shrink-0 w-[calc(66.66%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
           <SimpleBarGraph
             graphTitle='Share of women judges (% of total judges) over time'
+            graphDownload
             backgroundColor={false}
             data={transformDataForGraph(
               countryData.filter(d => d.court === 'total'),
@@ -206,6 +207,7 @@ export function CountryInsights() {
           </div>
           {countryData.filter(d => d.court === courtType.value).length > 0 ? (
             <GroupedBarGraph
+              graphDownload
               backgroundColor={false}
               data={transformDataForGraph(
                 countryData.filter(d => d.court === courtType.value),
@@ -284,6 +286,7 @@ export function CountryInsights() {
             graphTitle='Share of women judges (% of total judges) by court'
             backgroundColor={false}
             orientation='horizontal'
+            graphDownload
             data={
               countryLatestData.length > 0
                 ? [
@@ -330,6 +333,7 @@ export function CountryInsights() {
           <MultiLineAltChart
             graphTitle='Share of women judges (% of total judges) by court over time'
             backgroundColor={false}
+            graphDownload
             data={transformDataForGraph(
               countryData.map(d => ({
                 ...d,
@@ -383,6 +387,7 @@ export function CountryInsights() {
           <StackedBarGraph
             graphTitle='Age distribution over time (All courts)'
             backgroundColor={false}
+            graphDownload={ageDistributionData.length > 0}
             orientation='vertical'
             colors={['#296DDF', '#04BAAB', '#934DB0', '#F96445', '#c4c4c4']}
             data={
@@ -425,6 +430,7 @@ export function CountryInsights() {
           <SimpleBarGraph
             graphTitle='Age distribution (All courts)'
             backgroundColor={false}
+            graphDownload={ageDistributionData.length > 0}
             orientation='horizontal'
             suffix='%'
             data={
