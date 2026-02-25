@@ -8,7 +8,9 @@ const getPercentage = (value?: number, total?: number) =>
     : undefined;
 
 export const getData = async () => {
-  const response = await fetchAndParseCSV('./data/data.csv');
+  const response = await fetchAndParseCSV(
+    'https://raw.githubusercontent.com/UNDP-Data/dv-women-in-judiciary-data/refs/heads/main/data/data.csv',
+  );
   const completeData = (response as DataType[])
     .filter(d => d.Typeofoccupation === 'Judges')
     .map(d => ({
