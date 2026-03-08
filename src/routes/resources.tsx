@@ -1,5 +1,6 @@
 import { createRoute } from '@tanstack/react-router';
 import type { AnyRootRoute } from '@tanstack/react-router';
+import { Download } from 'lucide-react';
 import { H2 } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import {
@@ -40,27 +41,33 @@ export function Resources() {
       <div className='grid grid-cols-1 sm:grid-cols-4 gap-6'>
         {resources.map((resource, index) => (
           <Card
-            key={index}
             backgroundColor='gray'
             size='full'
             variant='with-image'
+            key={index}
             className=' border-none hover:bg-primary-gray-300'
           >
-            <CardHeader>
-              <CardImage className='h-fit' src={resource.image} />
-              <CardTitle>{resource.title}</CardTitle>
-            </CardHeader>
-            <CardFooter>
-              <a href={resource.url} target='_blank' rel='noopener noreferrer'>
+            <a
+              key={index}
+              href={resource.url}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='h-full flex flex-col'
+            >
+              <CardHeader className='grow'>
+                <CardImage className='h-fit' src={resource.image} />
+                <CardTitle>{resource.title}</CardTitle>
+              </CardHeader>
+              <CardFooter>
                 <Button
-                  padding='none'
-                  variant='link'
-                  className='cursor-pointer'
+                  variant='link-without-icon'
+                  className='cursor-pointer w-fit p-0 m-0'
                 >
                   Read more
+                  <Download color='#D12800' strokeWidth={2} />
                 </Button>
-              </a>
-            </CardFooter>
+              </CardFooter>
+            </a>
           </Card>
         ))}
       </div>
