@@ -231,6 +231,9 @@ function DataExplorerWidget() {
               {tab === 'map' || tab === 'ranks' || tab === 'disaggregations' ? (
                 <div className='h-fit pr-10 text-primary-gray-600'>
                   <P size='xs' marginBottom='none'>
+                    Data last updated 10 March, 2026
+                    <br />
+                    <br />
                     The visualization shows the most recent data available for
                     each country, so the years may differ between countries.
                     Hover over a country to see its data details.
@@ -272,6 +275,14 @@ function DataExplorerWidget() {
                       >
                         Countries without available data are shown in light
                         grey.
+                        <br />
+                        The designations employed and the presentation of
+                        material on this map do not imply the expression of any
+                        opinion whatsoever on the part of the Secretariat of the
+                        United Nations or UNDP concerning the legal status of
+                        any country, territory, city or area or its authorities,
+                        or concerning the delimitation of its frontiers or
+                        boundaries.
                       </P>
                     }
                     mapNoDataColor='var(--gray-200)'

@@ -9,7 +9,7 @@ export function About() {
       <div className='page-container px-4 sm:px-24 my-16'>
         <Spacer size='7xl' />
         <H2 className='font-heading uppercase' marginBottom='none'>
-          About the Women in the Judiciary Dashboard
+          Women in the Judiciary Dashboard
         </H2>
         <Spacer size='4xl' />
         <P>
@@ -38,7 +38,11 @@ export function About() {
           institutional arrangements. The platform currently covers more than
           120 countries across all regions and will continue to expand as
           additional data become available. Detailed information on data
-          sources, definitions, and compilation methods is available here.
+          sources, definitions, and compilation methods is available{' '}
+          <A href='./Technical Note - 12Mar2026.pdf' target='_blank'>
+            here
+          </A>
+          .
           <br />
           <br />
           The Women in the Judiciary Dashboard is developed by the{' '}
@@ -67,7 +71,7 @@ export function About() {
           systems.
         </P>
         <Spacer size='4xl' />
-        <P size='base'>
+        <P>
           <span className='font-bold'>
             For data inquiries and collaboration
           </span>

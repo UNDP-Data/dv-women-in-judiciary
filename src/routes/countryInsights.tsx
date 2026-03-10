@@ -106,13 +106,11 @@ export function CountryInsights() {
             <P className='text-[var(--white)]' marginBottom='none' size='xl'>
               Share of women judges (% of total judges)
             </P>
-            <div>
-              {latestDataAllCourt?.TimePeriod && (
-                <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
-                  {latestDataAllCourt.TimePeriod}
-                </span>
-              )}
-            </div>
+            {latestDataAllCourt?.TimePeriod && (
+              <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
+                {latestDataAllCourt.TimePeriod}
+              </span>
+            )}
           </div>
           <Spacer size='lg' />
           <H2 className='text-[var(--white)]' marginBottom='base'>
@@ -210,7 +208,9 @@ export function CountryInsights() {
               graphDownload
               backgroundColor={false}
               data={transformDataForGraph(
-                countryData.filter(d => d.court === courtType.value),
+                countryData.filter(
+                  d => d.court === courtType.value && d.male && d.female,
+                ),
                 'groupedBarChart',
                 [
                   {
@@ -472,8 +472,73 @@ export function CountryInsights() {
           />
         </div>
       </div>
+      <Spacer size='xl' />
+      <div className='bg-[var(--gray-200)] p-4'>
+        <P
+          marginBottom='none'
+          className='text-primary-gray-600'
+          size='sm'
+          weight='bold'
+        >
+          Sources
+        </P>
+        {[...new Set(countryData.map(d => d.Source))]
+          .filter(d => d)
+          .map((d, i) => (
+            <P
+              size='sm'
+              marginBottom='3xs'
+              key={i}
+              className='text-primary-gray-600'
+            >
+              {d}(
+              {[
+                ...new Set(
+                  countryData
+                    .filter(el => el.Source === d)
+                    .map(el => el.TimePeriod),
+                ),
+              ].join(', ')}
+              )
+            </P>
+          ))}
+        {[...new Set(countryData.map(d => d.FootNote))].filter(d => d).length >
+        0 ? (
+          <>
+            <Spacer size='2xl' />
+            <P
+              marginBottom='none'
+              className='text-primary-gray-600'
+              size='sm'
+              weight='bold'
+            >
+              Notes
+            </P>
+            {[...new Set(countryData.map(d => d.FootNote))]
+              .filter(d => d)
+              .map((d, i) => (
+                <P
+                  size='sm'
+                  marginBottom='3xs'
+                  key={i}
+                  className='text-primary-gray-600'
+                >
+                  {d}(
+                  {[
+                    ...new Set(
+                      countryData
+                        .filter(el => el.FootNote === d)
+                        .map(el => el.TimePeriod),
+                    ),
+                  ].join(', ')}
+                  )
+                </P>
+              ))}
+          </>
+        ) : null}
+      </div>
       <Spacer size='4xl' />
-      <div className='flex gap-6 flex-wrap'>
+      <div className='flex gap-6 flex-wrap items-stretch'>
         <DataDownloadCard />
         <CountryProfileCard />
       </div>

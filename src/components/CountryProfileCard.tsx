@@ -8,9 +8,9 @@ export default function CountryProfileCard() {
       href='https://www.undp.org/rolhr/justice/gender-justice'
       target='_blank'
       rel='noopener noreferrer'
-      className='basis-[calc(50%-12px)] grow min-w-[240px]'
+      className='basis-[calc(50%-12px)] grow min-w-[240px] flex flex-col'
     >
-      <div className='relative flex flex-col justify-between gap-8 box-border pt-8 px-6 pb-[220px] sm:px-8 sm:py-16 min-w-[240px]  bg-[var(--gray-200)]'>
+      <div className='grow relative flex flex-col justify-between gap-8 box-border pt-8 px-6 pb-[220px] sm:px-8 sm:py-16 min-w-[240px]  bg-[var(--gray-200)]'>
         <div
           className='absolute inset-0 pointer-events-none opacity-[0.7] z-10 bg-[url("imgs/texture.png")] bg-repeat mix-blend-overlay'
           style={{

@@ -10,6 +10,8 @@ export interface DataType {
   male?: number;
   female?: number;
   total?: number;
+  female_share?: number;
+  male_share?: number;
   age_under_35?: number;
   between_35_44?: number;
   between_45_54?: number;
@@ -20,6 +22,8 @@ export interface DataType {
   group_a?: number;
   group_b?: number;
   group_c?: number;
+  Source?: string;
+  FootNote?: string;
 }
 
 export interface FormattedDataType extends DataType {
