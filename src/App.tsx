@@ -108,12 +108,12 @@ function App() {
           </H2>
           <P size='base-responsive' marginBottom='none'>
             Globally, women remain underrepresented in the judiciary, with
-            representation ratio of 0.90, falling short of achieving parity of
+            representation ratio of 0.88, falling short of achieving parity of
             1. This gap is especially pronounced in some regions of the world.
             In regions such as Central Asia and Southern Asia along with Western
             Asia and Northern Africa and Oceania, women are significantly
             underrepresented, while Europe and North America exhibit a slight
-            over-representation. Furthermore, additional data reveal that women
+            overrepresentation. Furthermore, additional data reveal that women
             remain significantly underrepresented in higher-level judiciary
             roles pointing to the existence of a "glass ceiling".
           </P>

@@ -54,7 +54,7 @@ export default function Slider() {
                   ]}
                   graphSettings={{
                     graphTitle:
-                      'Ratio of women’s representation in the judiciary relative to their share of the working age population, by region (2024 or latest data available)',
+                      'Ratio of women’s representation in the judiciary relative to their share of the working age population, by region (2025 or latest data available',
                     orientation: 'horizontal',
                     colors: ['#04BAAB'],
                     animate: true,
