@@ -14,11 +14,12 @@ import {
 import { MultiLineAltChart } from '@undp/data-viz/MultiLineAltChart';
 import { numberFormattingFunction } from '@undp/data-viz/utils';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
-import { TriangleAlert } from 'lucide-react';
+import { Mars, TriangleAlert, Venus } from 'lucide-react';
 import { useEffect } from 'react';
 
 import DataDownloadCard from '@/components/DataDownloadCard';
 import { getData } from '@/QueryFn/getData';
+import { getChiefJusticeData } from '@/QueryFn/getChiefJusticeData';
 import {
   useCountry,
   useCountryInsightsActions,
@@ -27,14 +28,21 @@ import {
 import CountryProfileCard from '@/components/CountryProfileCard';
 
 function useData() {
-  return useQuery({
+  const dataQuery = useQuery({
     queryKey: ['get-data'],
     queryFn: getData,
   });
+
+  const chiefJusticeQuery = useQuery({
+    queryKey: ['get-chief-justice-data'],
+    queryFn: getChiefJusticeData,
+  });
+
+  return { dataQuery, chiefJusticeQuery };
 }
 
 export function CountryInsights() {
-  const { data, isLoading, isError } = useData();
+  const { dataQuery, chiefJusticeQuery } = useData();
   const routeApi = getRouteApi('/country-insights');
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
@@ -47,14 +55,15 @@ export function CountryInsights() {
   const country = useCountry();
   const courtType = useCourtType();
 
-  if (isLoading) return <Spinner size='lg' className='my-20 m-auto' />;
+  if (dataQuery.isLoading || chiefJusticeQuery.isLoading)
+    return <Spinner size='lg' className='my-20 m-auto' />;
 
-  if (isError) return <>Error</>;
-  if (!data) return <div>No data</div>;
-  const countryData = data.completeData
+  if (dataQuery.isError || chiefJusticeQuery.isError) return <>Error</>;
+  if (!dataQuery.data) return <div>No data</div>;
+  const countryData = dataQuery.data.completeData
     .filter(d => d.GeoAreaName === country)
     .sort((a, b) => a.TimePeriod - b.TimePeriod);
-  const countryLatestData = data.latestData.filter(
+  const countryLatestData = dataQuery.data.latestData.filter(
     d => d.GeoAreaName === country,
   );
   const latestDataAllCourt = countryLatestData.find(d => d.court === 'total');
@@ -89,7 +98,9 @@ export function CountryInsights() {
           updateCountry(d.value);
         }}
         value={{ label: country, value: country }}
-        options={[...new Set(data.completeData.map(d => d.GeoAreaName))]
+        options={[
+          ...new Set(dataQuery.data.completeData.map(d => d.GeoAreaName)),
+        ]
           .sort((a, b) => a.localeCompare(b))
           .map(d => ({
             label: d,
@@ -228,7 +239,7 @@ export function CountryInsights() {
               leftMargin={20}
               rightMargin={20}
               showValues
-              height={320}
+              height={360}
               colorDomain={['Men', 'Women']}
               colors={['#296DDF', '#04BAAB']}
             />
@@ -249,36 +260,75 @@ export function CountryInsights() {
             </div>
           )}
         </div>
-        <div className='bg-[#296DDF] flex flex-col grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>
-          <div className='flex gap-2 items-center'>
-            <P className='text-[var(--white)]' marginBottom='none' size='xl'>
-              SDG indicator 16.7.1
-            </P>
-            <div>
-              {latestDataAllCourt?.TimePeriod && (
-                <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
-                  {latestDataAllCourt.TimePeriod}
-                </span>
-              )}
+        <div className='flex flex-col gap-4 w-[calc(33.33%-0.5rem)] grow shrink-0  min-w-[320px]'>
+          {chiefJusticeQuery.data?.find(d => d.GeoAreaName === country)
+            ?.sex_chief_justice ? (
+            <div
+              className='flex flex-col bg-[var(--gray-100)] p-4'
+              style={{
+                backgroundColor:
+                  chiefJusticeQuery.data?.find(d => d.GeoAreaName === country)
+                    ?.sex_chief_justice === 'MALE'
+                    ? '#296DDF'
+                    : '#04BAAB',
+              }}
+            >
+              <div className='flex gap-2 items-center'>
+                <P
+                  className='text-[var(--white)]'
+                  marginBottom='none'
+                  size='xl'
+                >
+                  Gender of chief justice
+                </P>
+              </div>
+              <div className='grow items-center flex gap-3'>
+                {chiefJusticeQuery.data?.find(d => d.GeoAreaName === country)
+                  ?.sex_chief_justice === 'FEMALE' ? (
+                  <Venus size={48} color='#fff' />
+                ) : (
+                  <Mars size={48} color='#fff' />
+                )}
+                <H2 className='text-[var(--white)] py-6!' marginBottom='none'>
+                  {chiefJusticeQuery.data?.find(d => d.GeoAreaName === country)
+                    ?.sex_chief_justice === 'FEMALE'
+                    ? 'Female'
+                    : 'Male'}
+                </H2>
+              </div>
             </div>
-          </div>
-          <P
-            size='base'
-            marginBottom='none'
-            className='text-primary-white opacity-[0.6]'
-          >
-            Representation of women in the judiciary is an SDG indicator. It
-            measures the proportion of women in the judiciary relative to the
-            share of women in the working age population
-          </P>
-          <div className='grow items-center flex'>
-            <H2 className='text-[var(--white)]' marginBottom='base'>
-              {numberFormattingFunction(
-                latestDataAllCourt?.SDG1671C_Female,
-                'NA',
-                2,
-              )}
-            </H2>
+          ) : null}
+          <div className='bg-[#F96445] flex flex-col grow bg-[var(--gray-100)] p-4'>
+            <div className='flex gap-2 items-center'>
+              <P className='text-[var(--white)]' marginBottom='none' size='xl'>
+                SDG indicator 16.7.1
+              </P>
+              <div>
+                {latestDataAllCourt?.TimePeriod && (
+                  <span className='text-primary-white px-2 text-sm rounded-[2px] bg-[rgba(255,255,255,0.2)]'>
+                    {latestDataAllCourt.TimePeriod}
+                  </span>
+                )}
+              </div>
+            </div>
+            <P
+              size='base'
+              marginBottom='none'
+              className='text-primary-white opacity-[0.6]'
+            >
+              Representation of women in the judiciary is an SDG indicator. It
+              measures the proportion of women in the judiciary relative to the
+              share of women in the working age population
+            </P>
+            <div className='grow items-center flex'>
+              <H2 className='text-[var(--white)]' marginBottom='none'>
+                {numberFormattingFunction(
+                  latestDataAllCourt?.SDG1671C_Female,
+                  'NA',
+                  2,
+                )}
+              </H2>
+            </div>
           </div>
         </div>
         <div className='grow shrink-0 w-[calc(33.33%-0.5rem)] min-w-[320px] bg-[var(--gray-100)] p-4'>

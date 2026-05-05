@@ -26,6 +26,17 @@ export interface DataType {
   FootNote?: string;
 }
 
+export interface ChiefJusticeDataType {
+  GeoAreaName: string;
+  Region: string;
+  ISOalpha3: string;
+  Source?: string;
+  FootNote?: string;
+  Year_of_appointment?: number;
+  chief_justice_name?: string;
+  sex_chief_justice: 'MALE' | 'FEMALE';
+}
+
 export interface FormattedDataType extends DataType {
   malePercentage?: number;
   femalePercentage?: number;
