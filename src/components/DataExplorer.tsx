@@ -342,7 +342,7 @@ function DataExplorerWidget() {
                                 : true,
                             )
                             .map(d => d.ISOalpha3)
-                        : []
+                        : undefined
                     }
                     styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
@@ -440,7 +440,7 @@ function DataExplorerWidget() {
                                 : true,
                             )
                             .map(d => d.GeoAreaName)
-                        : []
+                        : undefined
                     }
                     orientation='horizontal'
                     graphTitle={
@@ -624,7 +624,9 @@ function DataExplorerWidget() {
                       backgroundColor={false}
                       colors={['#296DDF']}
                       showDots
-                      highlightedLines={countries}
+                      highlightedLines={
+                        countries?.length !== 0 ? countries : undefined
+                      }
                     />
                   </div>
                 )}
@@ -678,7 +680,7 @@ function DataExplorerWidget() {
                                 : true,
                             )
                             .map(d => d.GeoAreaName)
-                        : []
+                        : undefined
                     }
                     styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
