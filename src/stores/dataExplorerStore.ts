@@ -8,6 +8,7 @@ type Actions = {
   updateDisaggregationType: (d: 'gender' | 'age') => void;
   updateCountries: (d?: string[]) => void;
   updateCountriesForTrendLines: (d?: string[]) => void;
+  updateFilterByWomenChiefJustice: (d: boolean) => void;
 };
 
 type Store = {
@@ -18,6 +19,7 @@ type Store = {
   region?: string;
   countries?: string[];
   countriesForTrendLines?: string[];
+  filterByWomenChiefJustice: boolean;
   actions: Actions;
 };
 
@@ -34,6 +36,7 @@ export const useDataExplorerStore = create<Store>(set => ({
   },
   countriesForTrendLines: ['France', 'Italy', 'Spain', 'Canada'],
   region: undefined,
+  filterByWomenChiefJustice: false,
   countries: [],
   actions: {
     updateTab: (d = 'map') => set({ tab: d }),
@@ -44,6 +47,8 @@ export const useDataExplorerStore = create<Store>(set => ({
     updateCountries: (d?: string[]) => set({ countries: d }),
     updateCountriesForTrendLines: (d?: string[]) =>
       set({ countriesForTrendLines: d }),
+    updateFilterByWomenChiefJustice: (d: boolean) =>
+      set({ filterByWomenChiefJustice: d }),
   },
 }));
 
@@ -56,6 +61,8 @@ export const useRegion = () => useDataExplorerStore(s => s.region);
 export const useCountries = () => useDataExplorerStore(s => s.countries);
 export const useCountriesForTrendLines = () =>
   useDataExplorerStore(s => s.countriesForTrendLines);
+export const useFilterByWomenChiefJustice = () =>
+  useDataExplorerStore(s => s.filterByWomenChiefJustice);
 
 export const useDataExplorerActions = () =>
   useDataExplorerStore(s => s.actions);

@@ -292,8 +292,8 @@ export function CountryInsights() {
                 <H2 className='text-[var(--white)] py-6!' marginBottom='none'>
                   {chiefJusticeQuery.data?.find(d => d.GeoAreaName === country)
                     ?.sex_chief_justice === 'FEMALE'
-                    ? 'Female'
-                    : 'Male'}
+                    ? 'Woman'
+                    : 'Man'}
                 </H2>
               </div>
             </div>

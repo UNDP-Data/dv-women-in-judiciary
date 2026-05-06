@@ -11,6 +11,7 @@ import {
 import { ChartBarBig, ChartLine, Map, TextAlignStart } from 'lucide-react';
 import { Activity } from 'react';
 import { DropdownSelect } from '@undp/design-system-react/DropdownSelect';
+import { Switch } from '@undp/design-system-react/Switch';
 import { H6, P } from '@undp/design-system-react/Typography';
 import { Spacer } from '@undp/design-system-react/Spacer';
 import { transformDataForGraph } from '@undp/data-viz/transformData';
@@ -29,26 +30,36 @@ import {
   useCourtType,
   useDataExplorerActions,
   useDisaggregationType,
+  useFilterByWomenChiefJustice,
   useIndicator,
   useRegion,
   useTab,
 } from '@/stores/dataExplorerStore';
 import { DISAGGREGATION_CONFIG, INDICATORS_OPTIONS } from '@/constants';
+import { getChiefJusticeData } from '@/QueryFn/getChiefJusticeData';
 
 function useData() {
-  return useQuery({
+  const dataQuery = useQuery({
     queryKey: ['get-data'],
     queryFn: getData,
   });
+
+  const chiefJusticeQuery = useQuery({
+    queryKey: ['get-chief-justice-data'],
+    queryFn: getChiefJusticeData,
+  });
+
+  return { dataQuery, chiefJusticeQuery };
 }
 function DataExplorerWidget() {
-  const { isLoading, isError, data } = useData();
+  const { dataQuery, chiefJusticeQuery } = useData();
   const tab = useTab();
   const indicator = useIndicator();
   const courtType = useCourtType();
   const region = useRegion();
   const countries = useCountries();
   const disaggregationType = useDisaggregationType();
+  const filterByWomenChiefJustice = useFilterByWomenChiefJustice();
   const {
     updateTab,
     updateCourtType,
@@ -57,16 +68,17 @@ function DataExplorerWidget() {
     updateIndicator,
     updateDisaggregationType,
     updateCountriesForTrendLines,
+    updateFilterByWomenChiefJustice,
   } = useDataExplorerActions();
   const countriesForTrendLines = useCountriesForTrendLines();
-  if (isLoading)
+  if (dataQuery.isLoading || chiefJusticeQuery.isLoading)
     return (
       <div>
         <Spinner />
       </div>
     );
-  if (isError) return <div>Error</div>;
-  if (!data) return <div>No data</div>;
+  if (dataQuery.isError || chiefJusticeQuery.isError) return <div>Error</div>;
+  if (!dataQuery.data) return <div>No data</div>;
 
   const ColorDot = ({ color }: { color: string }) => (
     <span
@@ -188,7 +200,7 @@ function DataExplorerWidget() {
                       region ? { value: region, label: region } : undefined
                     }
                     options={[
-                      ...new Set(data.latestData.map(d => d.Region)),
+                      ...new Set(dataQuery.data?.latestData.map(d => d.Region)),
                     ].map(d => ({
                       label: d,
                       value: d,
@@ -197,6 +209,19 @@ function DataExplorerWidget() {
                     variant='light'
                     isClearable
                   />
+                  <Spacer size='xl' />
+                  <div className='flex flex-col gap-2 justify-between w-full'>
+                    <P size='sm' marginBottom='none'>
+                      Highlight countries with woman chief justice
+                    </P>
+                    <Switch
+                      onCheckedChange={d => {
+                        updateFilterByWomenChiefJustice(d);
+                      }}
+                      checked={filterByWomenChiefJustice}
+                      size='small'
+                    />
+                  </div>
                 </Activity>
                 <Activity
                   mode={
@@ -215,7 +240,9 @@ function DataExplorerWidget() {
                     }
                     value={countries?.map(d => ({ value: d, label: d }))}
                     options={[
-                      ...new Set(data.latestData.map(d => d.GeoAreaName)),
+                      ...new Set(
+                        dataQuery.data?.latestData.map(d => d.GeoAreaName),
+                      ),
                     ].map(d => ({
                       label: d,
                       value: d,
@@ -248,7 +275,9 @@ function DataExplorerWidget() {
                 {tab === 'map' && (
                   <ChoroplethMap
                     data={transformDataForGraph(
-                      data.latestData.filter(d => d.court === courtType.value),
+                      dataQuery.data.latestData.filter(
+                        d => d.court === courtType.value,
+                      ),
                       'choroplethMap',
                       [
                         {
@@ -266,6 +295,7 @@ function DataExplorerWidget() {
                         ? [0.5, 0.75, 0.9, 1.1, 1.25, 1.5]
                         : [20, 40, 60, 80]
                     }
+                    dimmedOpacity={0.1}
                     zoomAndCenterByHighlightedIds
                     footNote={
                       <P
@@ -299,9 +329,18 @@ function DataExplorerWidget() {
                     graphDownload
                     backgroundColor={false}
                     highlightedIds={
-                      region
-                        ? data.latestData
+                      region || filterByWomenChiefJustice
+                        ? dataQuery.data?.latestData
                             .filter(d => (region ? d.Region === region : true))
+                            .filter(d =>
+                              filterByWomenChiefJustice
+                                ? chiefJusticeQuery.data?.some(
+                                    cj =>
+                                      cj.GeoAreaName === d.GeoAreaName &&
+                                      cj.sex_chief_justice === 'FEMALE',
+                                  )
+                                : true,
+                            )
                             .map(d => d.ISOalpha3)
                         : []
                     }
@@ -337,7 +376,7 @@ function DataExplorerWidget() {
                               height={150}
                               backgroundColor={false}
                               data={transformDataForGraph(
-                                data.completeData.filter(
+                                dataQuery.data?.completeData.filter(
                                   el =>
                                     el.court === courtType.value &&
                                     el.GeoAreaName === d.data.GeoAreaName,
@@ -368,7 +407,7 @@ function DataExplorerWidget() {
                 {tab === 'ranks' && (
                   <SimpleBarGraph
                     data={transformDataForGraph(
-                      data.latestData.filter(
+                      dataQuery.data.latestData.filter(
                         d =>
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
@@ -388,6 +427,21 @@ function DataExplorerWidget() {
                         },
                       ],
                     )}
+                    highlightedDataPoints={
+                      filterByWomenChiefJustice
+                        ? dataQuery.data?.latestData
+                            .filter(d =>
+                              filterByWomenChiefJustice
+                                ? chiefJusticeQuery.data?.some(
+                                    cj =>
+                                      cj.GeoAreaName === d.GeoAreaName &&
+                                      cj.sex_chief_justice === 'FEMALE',
+                                  )
+                                : true,
+                            )
+                            .map(d => d.GeoAreaName)
+                        : []
+                    }
                     orientation='horizontal'
                     graphTitle={
                       <div className='flex gap-2 items-center'>
@@ -400,7 +454,7 @@ function DataExplorerWidget() {
                       </div>
                     }
                     height={
-                      data.latestData.filter(
+                      dataQuery.data.latestData.filter(
                         d =>
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
@@ -444,7 +498,7 @@ function DataExplorerWidget() {
                               height={150}
                               backgroundColor={false}
                               data={transformDataForGraph(
-                                data.completeData.filter(
+                                dataQuery.data.completeData.filter(
                                   el =>
                                     el.court === courtType.value &&
                                     el.GeoAreaName === d.data.GeoAreaName,
@@ -511,7 +565,9 @@ function DataExplorerWidget() {
                           label: d,
                         }))}
                         options={[
-                          ...new Set(data.latestData.map(d => d.GeoAreaName)),
+                          ...new Set(
+                            dataQuery.data.latestData.map(d => d.GeoAreaName),
+                          ),
                         ].map(d => ({
                           label: d,
                           value: d,
@@ -535,7 +591,7 @@ function DataExplorerWidget() {
                         </div>
                       }
                       data={transformDataForGraph(
-                        data.completeData.filter(
+                        dataQuery.data.completeData.filter(
                           d =>
                             d.court === courtType.value &&
                             d.TimePeriod >= 2015 &&
@@ -576,7 +632,7 @@ function DataExplorerWidget() {
                   <DumbbellChart
                     graphDownload
                     data={transformDataForGraph(
-                      data.latestData.filter(
+                      dataQuery.data.latestData.filter(
                         d =>
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
@@ -609,6 +665,21 @@ function DataExplorerWidget() {
                     maxBarThickness={40}
                     truncateBy={20}
                     suffix='%'
+                    highlightedDataPoints={
+                      filterByWomenChiefJustice
+                        ? dataQuery.data?.latestData
+                            .filter(d =>
+                              filterByWomenChiefJustice
+                                ? chiefJusticeQuery.data?.some(
+                                    cj =>
+                                      cj.GeoAreaName === d.GeoAreaName &&
+                                      cj.sex_chief_justice === 'FEMALE',
+                                  )
+                                : true,
+                            )
+                            .map(d => d.GeoAreaName)
+                        : []
+                    }
                     styles={{ tooltip: { padding: 0 } }}
                     tooltip={d => {
                       const { labels, colors, showNA } =
@@ -679,7 +750,7 @@ function DataExplorerWidget() {
                       </div>
                     }
                     height={
-                      data.latestData.filter(
+                      dataQuery.data.latestData.filter(
                         d =>
                           d.court === courtType.value &&
                           (region ? d.Region === region : true) &&
