@@ -13,3 +13,14 @@
 .font-heading {
   font-family: 'SohneBreit', sans-serif;
 }
+
+
+.data-story-frame{ 
+  height: calc(100vh - 115px);
+}
+
+@media (max-width: 767px) {
+  .data-story-frame {
+    height: calc(100vh - 75px);
+  }
+}
