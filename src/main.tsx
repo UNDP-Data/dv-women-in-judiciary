@@ -18,6 +18,7 @@ import './styles/style.css';
 import createAboutRoute from './routes/about';
 import createResourcesRoute from './routes/resources';
 import createDataExplorerRoute from './routes/dataExplorer';
+import createDataStoryRoute from './routes/dataStory';
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -45,6 +46,7 @@ const routeTree = rootRoute.addChildren([
   createAboutRoute(rootRoute),
   createResourcesRoute(rootRoute),
   createDataExplorerRoute(rootRoute),
+  createDataStoryRoute(rootRoute),
 ]);
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext();

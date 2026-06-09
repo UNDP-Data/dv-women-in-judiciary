@@ -8,7 +8,7 @@ import { Link } from '@tanstack/react-router';
 
 export default function HeaderEl() {
   return (
-    <Header className='justfify-between'>
+    <Header className='justify-between'>
       <HeaderLogoUnit
         hyperlink='./'
         siteName='Women in Judiciary'
@@ -33,6 +33,12 @@ export default function HeaderEl() {
             className='[&.active]:font-bold [&.active]:text-primary-blue-600'
           >
             Resources
+          </Link>
+          <Link
+            to='/data-story'
+            className='[&.active]:font-bold [&.active]:text-primary-blue-600'
+          >
+            Data story
           </Link>
           <Link
             to='/about'
