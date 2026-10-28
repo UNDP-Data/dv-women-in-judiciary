@@ -249,7 +249,7 @@ function DataExplorerWidget() {
             {tab === 'map' || tab === 'ranks' || tab === 'disaggregations' ? (
               <div className='h-fit pr-10 text-primary-gray-600'>
                 <P size='xs' marginBottom='none'>
-                  Data last updated 10 March, 2026
+                  Data last updated 26 October, 2026
                   <br />
                   <br />
                   The visualization shows the most recent data available for
